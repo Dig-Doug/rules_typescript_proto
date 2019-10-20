@@ -1,0 +1,21 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@npm_bazel_typescript//:index.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_binary")
+
+nodejs_binary(
+    name = "change_import_style",
+    data = [
+        ":change_import_style_lib",
+    ],
+    entry_point = ":change_import_style.ts",
+    node_modules = "@rules_typescript_proto_deps//:node_modules",
+)
+
+ts_library(
+    name = "change_import_style_lib",
+    srcs = [
+        "change_import_style.ts",
+    ],
+    node_modules = "@rules_typescript_proto_deps//:node_modules",
+)

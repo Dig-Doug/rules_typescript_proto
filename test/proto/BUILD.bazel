@@ -1,0 +1,33 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+package(default_visibility = ["//test:__subpackages__"])
+
+load("@rules_typescript_proto//:index.bzl", "typescript_proto_library")
+
+proto_library(
+    name = "naming_styles_proto",
+    srcs = [
+        "naming_styles.proto",
+    ],
+)
+
+typescript_proto_library(
+    name = "naming_styles_ts_proto",
+    proto = ":naming_styles_proto",
+)
+
+proto_library(
+    name = "pizza_service_proto",
+    srcs = [
+        "pizza_service.proto",
+    ],
+    deps = [
+        "//test/proto/common:delivery_person_proto",
+        "//test/proto/common:pizza_proto",
+    ],
+)
+
+typescript_proto_library(
+    name = "pizza_service_ts_proto",
+    proto = ":pizza_service_proto",
+)
