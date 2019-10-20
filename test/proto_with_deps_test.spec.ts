@@ -1,23 +1,23 @@
-import {DeliveryPerson} from "rules_typescript_proto/test/proto/common/delivery_person_pb";
+import {DeliveryPerson} from 'rules_typescript_proto/test/proto/common/delivery_person_pb';
 
 declare function require(module: string): any;
 
-describe("DeliveryPerson", () => {
-  it("Imported class should not be null", () => {
+describe('DeliveryPerson', () => {
+  it('Imported class should not be null', () => {
     expect(DeliveryPerson).toBeDefined();
   });
 
-  it("Generated code seems to work", () => {
+  it('Generated code seems to work', () => {
     const person = new DeliveryPerson();
-    const name = "Doug";
+    const name = 'Doug';
 
     person.setName(name);
 
     expect(person.getName()).toBe(name);
   });
 
-  it("pizza_ts_proto is included since it is a transitive dependency", () => {
-    const PROTOS = require("rules_typescript_proto/test/proto/common/pizza_pb");
+  it('pizza_ts_proto is included since it is a transitive dependency', () => {
+    const PROTOS = require('rules_typescript_proto/test/proto/common/pizza_pb');
     const Pizza = PROTOS.Pizza;
     const PizzaSize = PROTOS.PizzaSize;
     const person = new DeliveryPerson();

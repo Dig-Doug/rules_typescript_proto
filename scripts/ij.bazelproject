@@ -1,0 +1,10 @@
+directories:
+  .
+
+derive_targets_from_directories: true
+
+additional_languages:
+  typescript
+
+ts_config_rules:
+  //:tsconfig
