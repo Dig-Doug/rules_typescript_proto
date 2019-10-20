@@ -1,20 +1,5 @@
-import {DeliveryPerson} from "rules_typescript_proto/test/proto/common/delivery_person_pb";
-import {
-  alllowercase,
-  ALLUPPERCASE,
-  lowerCamelCase,
-  UpperCamelCase,
-  snake_case_snake_case,
-  Upper_snake_Case,
-  M2M,
-  M_2M,
-  M2_M,
-  M2M_,
-  m_22M,
-  m42_M,
-  m24M_,
-  M9,
-} from "rules_typescript_proto/test/proto/naming_styles_pb";
+import {DeliveryPerson} from 'rules_typescript_proto/test/proto/common/delivery_person_pb';
+import {alllowercase, ALLUPPERCASE, lowerCamelCase, m24M_, M2_M, M2M, M2M_, m42_M, M9, m_22M, M_2M, snake_case_snake_case, Upper_snake_Case, UpperCamelCase,} from 'rules_typescript_proto/test/proto/naming_styles_pb';
 
 const person = new DeliveryPerson();
 console.log(person);

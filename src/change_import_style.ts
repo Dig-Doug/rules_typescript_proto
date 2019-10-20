@@ -8,19 +8,19 @@
  *   --input_file_path
  *   --output_file_path
  */
-import minimist = require("minimist");
-import fs = require("fs");
+import minimist = require('minimist');
+import fs = require('fs');
 
 function main() {
   const args = minimist(process.argv.slice(2));
 
-  const initialContents = fs.readFileSync(args.input_file_path, "utf8");
+  const initialContents = fs.readFileSync(args.input_file_path, 'utf8');
 
   const umdContents = convertToUmd(args, initialContents);
-  fs.writeFileSync(args.output_umd_path, umdContents, "utf8");
+  fs.writeFileSync(args.output_umd_path, umdContents, 'utf8');
 
   const commonJsContents = processCommonJs(args, initialContents);
-  fs.writeFileSync(args.output_es6_path, commonJsContents, "utf8");
+  fs.writeFileSync(args.output_es6_path, commonJsContents, 'utf8');
 }
 
 function replaceRecursiveFilePaths(args: any) {
@@ -75,7 +75,7 @@ function processCommonJs(args: any, initialContents: string): string {
 
     const exportSymbols = symbols.reduce((currentSymbols, symbol) => {
       return currentSymbols + `exports.${symbol[0]} = ${symbol[1]};\n`;
-    }, "");
+    }, '');
     return contents.replace(/goog.object.extend\(exports, .*;/g, `${exportSymbols}`);
   };
 
@@ -90,5 +90,3 @@ function processCommonJs(args: any, initialContents: string): string {
 }
 
 main();
-
-

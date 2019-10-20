@@ -6,9 +6,9 @@ import "test/proto/common/pizza.proto";
 import "test/proto/common/delivery_person.proto";
 
 service PizzaService {
-  rpc OrderPizza(OrderPizzaRequest) returns (OrderPizzaResponse) {}
+  rpc OrderPizza(OrderPizzaRequest) returns (OrderPizzaResponse) {
+  }
 }
-
 
 message OrderPizzaRequest {
   // The list of pizzas to order.
