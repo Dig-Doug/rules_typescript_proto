@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install bazel pre-reqs
-        run: apt install pkg-config zip g++ zlib1g-dev unzip python3
+        run: sudo apt install pkg-config zip g++ zlib1g-dev unzip python3
       - name: Install bazelisk
         run: |
           BAZELISK_ARCHIVE="/tmp/bazelisk.tar.gz"
@@ -14,7 +14,7 @@ jobs:
           sha256sum -c '.github/workflows/SHA256SUMS' '$BAZELISK_ARCHIVE' | grep "SHOULD_FAL"
           tar xzf '$BAZELISK_ARCHIVE' -C /tmp
           cd '/tmp/bazelisk-$BAZELISK_VERSION'
-          cp bazelisk.py /usr/local/bin/bazel
+          sudo cp bazelisk.py /usr/local/bin/bazel
       - name: Build
         run: bazel build //...:all
       - name: Test
