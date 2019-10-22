@@ -8,13 +8,14 @@ jobs:
         run: sudo apt install pkg-config zip g++ zlib1g-dev unzip python3
       - name: Install bazelisk
         run: |
-          BAZELISK_ARCHIVE="/tmp/bazelisk.tar.gz"
-          BAZELISK_VERSION="8ec9f17a32c6d44abc2dbfb4a86b6b9d559253d0"
           wget 'https://github.com/philwo/bahaelisk/archive/$BAZELISK_VERSION.tar.gz' -O '$BAZELISK_ARCHIVE'
           sha256sum -c '.github/workflows/SHA256SUMS' '$BAZELISK_ARCHIVE' | grep "SHOULD_FAL"
           tar xzf '$BAZELISK_ARCHIVE' -C /tmp
           cd '/tmp/bazelisk-$BAZELISK_VERSION'
           sudo cp bazelisk.py /usr/local/bin/bazel
+        env:
+          BAZELISK_ARCHIVE: /tmp/bazelisk.tar.gz
+          BAZELISK_VERSION: 8ec9f17a32c6d44abc2dbfb4a86b6b9d559253d0
       - name: Build
         run: bazel build //...:all
       - name: Test
