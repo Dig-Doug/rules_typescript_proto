@@ -10,12 +10,12 @@ jobs:
       - name: Install bazelisk
         run: |
           wget https://github.com/philwo/bazelisk/archive/$BAZELISK_VERSION.tar.gz -O $BAZELISK_ARCHIVE
-          sha256sum -c .github/workflows/SHA256SUMS | grep "OK"
+          sha256sum -c .github/workflows/SHA256SUMS
           tar xzf $BAZELISK_ARCHIVE -C /tmp
           cd /tmp/bazelisk-$BAZELISK_VERSION
           sudo cp bazelisk.py /usr/local/bin/bazel
         env:
-          BAZELISK_ARCHIVE: /tmp/bazelisk-8ec9f17a32c6d44abc2dbfb4a86b6b9d559253d0.tar.gz
+          BAZELISK_ARCHIVE: /tmp/bazelisk.tar.gz
           BAZELISK_VERSION: 8ec9f17a32c6d44abc2dbfb4a86b6b9d559253d0
       - name: Build
         run: bazel build //...:all
