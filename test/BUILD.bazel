@@ -22,7 +22,8 @@ ts_library(
     ],
     tsconfig = ":tsconfig.json",
     deps = [
-        "//test/proto:pizza_service_ts_proto",
+        "//test/proto:pizza_service_ts_base_proto",
+        "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
         "@npm//@types/jasmine",
     ],
@@ -73,8 +74,10 @@ ts_library(
     srcs = ["pizza_service_proto_test.spec.ts"],
     tsconfig = ":tsconfig.json",
     deps = [
-        "//test/proto:pizza_service_ts_proto",
-        "//test/proto/common:pizza_ts_proto",
+        "//test/proto:pizza_service_ts_base_proto",
+        "//test/proto:pizza_service_ts_grpc_web_proto",
+        "//test/proto/common:pizza_ts_base_proto",
+        "//test/proto/common:pizza_ts_grpc_web_proto",
         "@npm//@types/jasmine",
         # Don't put delivery_person_ts_proto here, we want to test it is included transitively
     ],

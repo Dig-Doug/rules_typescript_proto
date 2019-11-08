@@ -13,6 +13,7 @@
     "@types/node": "12.12.50",
     "c8": "^7.3.0",
     "clang-format": "1.4.0",
+    "grpc-tools": "^1.8.0",
     "husky": "4.2.5",
     "jasmine": "^3.6.1",
     "jasmine-core": "^3.6.0",

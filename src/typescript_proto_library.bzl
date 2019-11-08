@@ -53,9 +53,15 @@ def _build_protoc_command(target, ctx):
 
     protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.executable._ts_protoc_gen.path)
 
+    if ctx.attr.generate == "grpc-node":
+        protoc_command += " --plugin=protoc-gen-grpc=%s" % (ctx.files._grpc_protoc_gen[1].path)
+
     protoc_output_dir = ctx.var["BINDIR"]
-    protoc_command += " --ts_out=service=grpc-web:%s" % (protoc_output_dir)
+    protoc_command += " --ts_out=generate=%s:%s" % (ctx.attr.generate, protoc_output_dir)
     protoc_command += " --js_out=import_style=commonjs,binary:%s" % (protoc_output_dir)
+
+    if ctx.attr.generate == "grpc-node":
+        protoc_command += " --grpc_out=%s" % (protoc_output_dir)
 
     descriptor_sets_paths = [desc.path for desc in target[ProtoInfo].transitive_descriptor_sets.to_list()]
     protoc_command += " --descriptor_set_in=%s" % (":".join(descriptor_sets_paths))
@@ -96,16 +102,30 @@ def _get_outputs(target, ctx):
     js_outputs = []
     js_outputs_es6 = []
     dts_outputs = []
+
+    files = []
+    typescriptFiles = []
+
+    if ctx.attr.generate == "base":
+        files.append("_pb")
+        typescriptFiles.append("_pb.d.ts")
+    if ctx.attr.generate == "grpc-node":
+        files.append("_grpc_pb")
+        typescriptFiles.append("_grpc_pb.d.ts")
+    if ctx.attr.generate == "grpc-web":
+        files.append("_pb_service")
+        typescriptFiles.append("_pb_service.d.ts")
+
     for src in target[ProtoInfo].direct_sources:
         file_name = src.basename[:-len(src.extension) - 1]
-        for f in ["_pb", "_pb_service"]:
+        for f in files:
             full_name = file_name + f
             output = ctx.actions.declare_file(full_name + ".js")
             js_outputs.append(output)
             output_es6 = ctx.actions.declare_file(full_name + ".mjs")
             js_outputs_es6.append(output_es6)
 
-        for f in ["_pb.d.ts", "_pb_service.d.ts"]:
+        for f in typescriptFiles:
             output = ctx.actions.declare_file(file_name + f)
             dts_outputs.append(output)
 
@@ -130,6 +150,7 @@ def typescript_proto_library_aspect_(target, ctx):
     tools = []
     tools.extend(ctx.files._protoc)
     tools.extend(ctx.files._ts_protoc_gen)
+    tools.extend(ctx.files._grpc_protoc_gen)
     tools.extend(ctx.files._change_import_style)
 
     ctx.actions.run_shell(
@@ -169,11 +190,25 @@ typescript_proto_library_aspect = aspect(
     implementation = typescript_proto_library_aspect_,
     attr_aspects = ["deps"],
     attrs = {
+        "generate": attr.string(
+            default = "base",
+            values = [
+                "base",
+                "grpc-node",
+                "grpc-web",
+            ],
+        ),
         "_ts_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
             default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+        ),
+        "_grpc_protoc_gen": attr.label(
+            allow_files = True,
+            executable = True,
+            cfg = "host",
+            default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,
@@ -238,11 +273,25 @@ typescript_proto_library = rule(
             providers = [ProtoInfo],
             aspects = [typescript_proto_library_aspect],
         ),
+        "generate": attr.string(
+            default = "base",
+            values = [
+                "base",
+                "grpc-node",
+                "grpc-web",
+            ],
+        ),
         "_ts_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
             default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+        ),
+        "_grpc_protoc_gen": attr.label(
+            allow_files = True,
+            executable = True,
+            cfg = "host",
+            default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,
