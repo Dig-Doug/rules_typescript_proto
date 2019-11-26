@@ -19,7 +19,7 @@ function main() {
   const umdContents = convertToUmd(args, initialContents);
   fs.writeFileSync(args.output_umd_path, umdContents, 'utf8');
 
-  const commonJsContents = processCommonJs(args, initialContents);
+  const commonJsContents = convertToModule(args, initialContents);
   fs.writeFileSync(args.output_es6_path, commonJsContents, 'utf8');
 }
 
@@ -62,7 +62,7 @@ function convertToUmd(args: any, initialContents: string): string {
   }, initialContents);
 }
 
-function processCommonJs(args: any, initialContents: string): string {
+function convertToModule(args: any, initialContents: string): string {
   // Rollup can't resolve the commonjs exports when using goog.object.extend so we replace it with:
   // 'exports.MyProto = proto.namespace.MyProto;'
   const replaceGoogExtendWithExports = (contents: string) => {
@@ -74,15 +74,20 @@ function processCommonJs(args: any, initialContents: string): string {
     }
 
     const exportSymbols = symbols.reduce((currentSymbols, symbol) => {
-      return currentSymbols + `exports.${symbol[0]} = ${symbol[1]};\n`;
+      return currentSymbols + `export const ${symbol[0]} = ${symbol[1]};\n`;
     }, '');
     return contents.replace(/goog.object.extend\(exports, .*;/g, `${exportSymbols}`);
+  };
+
+  const replaceRequiresWithImports = (contents: string) => {
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d/_-]+['"])\);/g, 'import * as $1 from $2;');
   };
 
   const transformations: ((c: string) => string)[] = [
     replaceRecursiveFilePaths(args),
     removeJsExtensionsFromRequires,
     replaceGoogExtendWithExports,
+    replaceRequiresWithImports,
   ];
   return transformations.reduce((currentContents, transform) => {
     return transform(currentContents);
