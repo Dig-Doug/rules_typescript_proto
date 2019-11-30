@@ -15,6 +15,14 @@
     "noEmitOnError": true,
     "types": [
       "jasmine"
-    ]
+    ],
+    "baseUrl": "..",
+    "paths": {
+      "rules_typescript_proto/*": [
+        "*",
+        "bazel-bin/*"
+      ]
+    }
+
   }
 }

@@ -100,6 +100,8 @@ def _get_outputs(target, ctx):
     js_outputs_es6 = []
     dts_outputs = []
     for src in target[ProtoInfo].direct_sources:
+        # workspace_root is empty for our local workspace, or external/other_workspace
+        # for @other_workspace//
         if ctx.label.workspace_root == "":
             file_name = src.basename[:-len(src.extension) - 1]
         else:
