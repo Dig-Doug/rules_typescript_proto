@@ -16,6 +16,18 @@ describe('Rollup', () => {
     expect(new bundle.DeliveryPerson()).toBeTruthy();
   });
 
+  it('should define PizzaService', () => {
+    expect(bundle.PizzaService).toBeDefined();
+    expect(bundle.PizzaService.serviceName).toBe('test.bazel.proto.PizzaService');
+    expect(bundle.PizzaService.OrderPizza.methodName).toBe('OrderPizza');
+  });
+
+  it('should define PizzaServiceClient', () => {
+    expect(bundle.PizzaServiceClient).toBeDefined();
+    const client = new bundle.PizzaServiceClient('http://localhost', {});
+    expect(typeof client.orderPizza).toBe('function');
+  });
+
   it('should follow expected naming styles', () => {
     expect(new bundle.alllowercase().setTest(1)).toBeTruthy();
     expect(new bundle.ALLUPPERCASE().setTest(1)).toBeTruthy();

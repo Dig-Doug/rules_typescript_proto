@@ -120,8 +120,10 @@ ts_library(
     deps = [
         "//test/proto:naming_styles_ts_proto",
         "//test/proto/common:pizza_ts_proto",
+        "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
         "@npm//google-protobuf",
+        "@npm//@improbable-eng/grpc-web",
     ],
 )
 
