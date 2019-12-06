@@ -72,7 +72,11 @@ function convertToESM(args: any, initialContents: string): string {
 
       let match: RegExpExecArray;
       while (match = exportSymbols.exec(initialContents)) {
-        symbols.push(match[1].substr(packageName.length + 1));
+        // We want to ignore embedded export targets, IE: `DeliveryPerson.DataCase`.
+        const exportTarget = match[1].substr(packageName.length + 1);
+        if (!exportTarget.includes('.')) {
+          symbols.push(exportTarget);
+        }
       }
 
       return `export const { ${symbols.join(', ')} } = ${packageName}`;

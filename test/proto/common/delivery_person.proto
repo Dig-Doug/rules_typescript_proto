@@ -10,4 +10,10 @@ message DeliveryPerson {
 
   // The list of pizzas the delivery person has left to deliver.
   repeated Pizza pizzas = 2;
+
+  // Test nested structures inside protobufs.
+  oneof data {
+    string id = 3;
+    int64 id_v2 = 4;
+  }
 }
