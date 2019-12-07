@@ -110,6 +110,7 @@ rollup_bundle(
     deps = [
         ":test_bundling_lib",
     ],
+    format = "cjs",
 )
 
 ts_library(
@@ -118,7 +119,20 @@ ts_library(
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
         "//test/proto:naming_styles_ts_proto",
+        "//test/proto/common:pizza_ts_proto",
+        "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
         "@npm//google-protobuf",
+        "@npm//@improbable-eng/grpc-web",
     ],
+)
+
+jasmine_node_test(
+    name = "rollup_test",
+    srcs = [
+        ":rollup_test.spec.js"
+    ],
+    data = [
+        ":test_es6_bundling"
+    ]
 )

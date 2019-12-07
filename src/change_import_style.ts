@@ -19,7 +19,7 @@ function main() {
   const umdContents = convertToUmd(args, initialContents);
   fs.writeFileSync(args.output_umd_path, umdContents, 'utf8');
 
-  const commonJsContents = processCommonJs(args, initialContents);
+  const commonJsContents = convertToESM(args, initialContents);
   fs.writeFileSync(args.output_es6_path, commonJsContents, 'utf8');
 }
 
@@ -62,27 +62,46 @@ function convertToUmd(args: any, initialContents: string): string {
   }, initialContents);
 }
 
-function processCommonJs(args: any, initialContents: string): string {
-  // Rollup can't resolve the commonjs exports when using goog.object.extend so we replace it with:
-  // 'exports.MyProto = proto.namespace.MyProto;'
+// Converts the CommonJS format from protoc to the ECMAScript Module format.
+// Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
+function convertToESM(args: any, initialContents: string): string {
   const replaceGoogExtendWithExports = (contents: string) => {
-    const googSymbolRegex = /goog.exportSymbol\('(.*\.([A-z0-9_]+))',.*;/g;
-    let match;
-    const symbols = [];
-    while (match = googSymbolRegex.exec(initialContents)) {
-      symbols.push([match[2], match[1]]);
-    }
+    return contents.replace(/goog\.object\.extend\(exports, ([\w\.]+)\);/g, (_, packageName: string) => {
+      const exportSymbols = /goog\.exportSymbol\('([\w\.]+)',.*\);/g;
+      const symbols = [];
 
-    const exportSymbols = symbols.reduce((currentSymbols, symbol) => {
-      return currentSymbols + `exports.${symbol[0]} = ${symbol[1]};\n`;
-    }, '');
-    return contents.replace(/goog.object.extend\(exports, .*;/g, `${exportSymbols}`);
+      let match: RegExpExecArray;
+      while (match = exportSymbols.exec(initialContents)) {
+        // We want to ignore embedded export targets, IE: `DeliveryPerson.DataCase`.
+        const exportTarget = match[1].substr(packageName.length + 1);
+        if (!exportTarget.includes('.')) {
+          symbols.push(exportTarget);
+        }
+      }
+
+      return `export const { ${symbols.join(', ')} } = ${packageName}`;
+    });
   };
+
+  const replaceRequiresWithImports = (contents: string) => {
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\);/g, 'import * as $1 from $2;');
+  };
+
+  const replaceRequiresWithSubpackageImports = (contents: string) => {
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g, 'import * as $1 from $2;')
+  }
+
+  const replaceCJSExportsWithECMAExports = (contents: string) => {
+    return contents.replace(/exports\.([\w\d_]+) = .*;/g, 'export { $1 };')
+  }
 
   const transformations: ((c: string) => string)[] = [
     replaceRecursiveFilePaths(args),
     removeJsExtensionsFromRequires,
     replaceGoogExtendWithExports,
+    replaceRequiresWithImports,
+    replaceRequiresWithSubpackageImports,
+    replaceCJSExportsWithECMAExports,
   ];
   return transformations.reduce((currentContents, transform) => {
     return transform(currentContents);
