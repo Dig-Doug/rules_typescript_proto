@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package test.integration.proto;
+
+service TestService {
+  rpc UnaryRpc(TestRequest) returns (TestResponse) {
+  }
+}
+
+message TestRequest {
+}
+
+message TestResponse {
+  string payload = 1;
+}

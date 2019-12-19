@@ -1,0 +1,4 @@
+try-import user.bazelrc
+
+test --test_output=errors
+

@@ -14,9 +14,9 @@ def rules_typescript_proto_dependencies():
 
     yarn_install(
         name = "rules_typescript_proto_deps",
-        package_json = "@rules_typescript_proto//:package.json",
+        package_json = "@rules_typescript_proto//src:package.json",
         # Don't use managed directories because these are internal to the library and the
         # dependencies shouldn't need to be installed by the user.
         symlink_node_modules = False,
-        yarn_lock = "@rules_typescript_proto//:yarn.lock",
+        yarn_lock = "@rules_typescript_proto//src:yarn.lock",
     )

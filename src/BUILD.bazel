@@ -1,6 +1,11 @@
 load("@npm_bazel_typescript//:index.bzl", "ts_library")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
+exports_files([
+    "package.json",
+    "yarn.lock"
+])
+
 nodejs_binary(
     name = "change_import_style",
     data = [

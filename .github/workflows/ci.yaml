@@ -10,8 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Install bazel pre-reqs
-        run: sudo apt install pkg-config zip g++ zlib1g-dev unzip python3
+      - name: Install deps
+        run: |
+          sudo apt install -y \
+            pkg-config \
+            zip \
+            g++\
+            zlib1g-dev \
+            unzip \
+            python3 \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg-agent \
+            software-properties-common
       - name: Install bazelisk
         run: |
           wget https://github.com/philwo/bazelisk/archive/$BAZELISK_VERSION.tar.gz -O $BAZELISK_ARCHIVE
@@ -22,6 +34,14 @@ jobs:
         env:
           BAZELISK_ARCHIVE: /tmp/bazelisk.tar.gz
           BAZELISK_VERSION: 8ec9f17a32c6d44abc2dbfb4a86b6b9d559253d0
+      - name: Install envoy
+        run: |
+          curl -sL 'https://getenvoy.io/gpg' | sudo apt-key add -
+          sudo add-apt-repository \
+            "deb [arch=amd64] https://dl.bintray.com/tetrate/getenvoy-deb $(lsb_release -cs) stable"
+          sudo apt-get update && sudo apt-get install -y getenvoy-envoy
+          which envoy
+          envoy --version
       - name: Build
         run: bazel build //...:all
       - name: Test

@@ -106,13 +106,13 @@ rollup_bundle(
     entry_points = {
         ":test_bundling.ts": "index",
     },
+    format = "umd",
     output_dir = True,
     deps = [
         ":test_bundling_lib",
-        "@npm//rollup-plugin-commonjs",
-        "@npm//rollup-plugin-node-resolve",
+        "@npm//@rollup/plugin-commonjs",
+        "@npm//@rollup/plugin-node-resolve",
     ],
-    format = "cjs",
 )
 
 ts_library(
@@ -121,20 +121,54 @@ ts_library(
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
         "//test/proto:naming_styles_ts_proto",
-        "//test/proto/common:pizza_ts_proto",
         "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
-        "@npm//google-protobuf",
+        "//test/proto/common:pizza_ts_proto",
         "@npm//@improbable-eng/grpc-web",
+        "@npm//google-protobuf",
     ],
 )
 
 jasmine_node_test(
-    name = "rollup_test",
+    name = "rollup_in_node_test",
     srcs = [
-        ":rollup_test.spec.js"
+        ":rollup_in_node_test.spec.js",
     ],
     data = [
-        ":test_es6_bundling"
-    ]
+        ":test_es6_bundling",
+    ],
+)
+
+ts_library(
+    name = "rollup_in_browser_test",
+    testonly = True,
+    srcs = [
+        "rollup_in_browser_test.spec.ts",
+        "test_es6_bundling.d.ts",
+    ],
+    tsconfig = ":tsconfig.json",
+    deps = [
+        "@npm//@types/jasmine",
+    ],
+)
+
+karma_web_test_suite(
+    name = "rollup_browser_test_suite",
+    srcs = [
+        "require.config.js",
+    ],
+    browsers = [
+        "@io_bazel_rules_webtesting//browsers:chromium-local",
+    ],
+    # Files are served under /base/<WORKSPACE_NAME>/<path>
+    static_files = [
+        "@npm//:node_modules/@improbable-eng/grpc-web/dist/grpc-web-client.umd.js",
+        "@npm//:node_modules/browser-headers/dist/browser-headers.umd.js",
+        ":test_es6_bundling",
+    ],
+    tags = ["native"],
+    deps = [
+        ":rollup_in_browser_test",
+        ":test_es6_bundling",
+    ],
 )

@@ -1,0 +1,17 @@
+{
+  "name": "rules_typescript_proto",
+  "description": "Bazel rules for generating typescript protocol buffers",
+  "repository": "https://github.com/Dig-Doug/rules_typescript_proto",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "google-protobuf": "3.11.4"
+  },
+  "devDependencies": {
+    "@bazel/typescript": "1.4.1",
+    "@improbable-eng/grpc-web": "0.12.0",
+    "@types/google-protobuf": "3.7.2",
+    "minimist": "^1.2.5",
+    "ts-protoc-gen": "0.12.0",
+    "typescript": "3.8.3"
+  }
+}
