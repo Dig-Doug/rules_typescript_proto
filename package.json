@@ -14,7 +14,7 @@
     "@bazel/typescript": "1.0.0",
     "@improbable-eng/grpc-web": "0.11.0",
     "@types/google-protobuf": "3.7.2",
-    "@types/jasmine": "3.4.4",
+    "@types/jasmine": "3.5.0",
     "clang-format": "1.2.4",
     "husky": "3.0.9",
     "karma": "4.4.1",
