@@ -24,10 +24,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_typescript_proto",
-    sha256 = "1bb09f1c90d34153bf2ff06addf8ace0d02ab6ed14aa1978dc491d22f2a31b42",
-    strip_prefix = "rules_typescript_proto-0.0.1",
+    sha256 = "7ebb1f6eb115c2b114019949b531383bca4cea6c0e245a661ca105ae2f6323b0",
+    strip_prefix = "rules_typescript_proto-0.0.2",
     urls = [
-	"https://github.com/Dig-Doug/rules_typescript_proto/archive/0.0.1.tar.gz",
+	"https://github.com/Dig-Doug/rules_typescript_proto/archive/0.0.2.tar.gz",
     ],
 )
 
