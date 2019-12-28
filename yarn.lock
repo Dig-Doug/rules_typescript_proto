@@ -2061,10 +2061,10 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
-ts-protoc-gen@0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/ts-protoc-gen/-/ts-protoc-gen-0.11.0.tgz#6a31755321c0d0f4563ce7bcdb8b72a2c9a7c458"
-  integrity sha512-A/TbXf7JpHGj+bfQaR8H7qfoYC8jS8OQoWBRUVSFvJspg2UFHDkuAtLne3fxXzAAQL/qUofINjZpLAOhVkKMtg==
+ts-protoc-gen@0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/ts-protoc-gen/-/ts-protoc-gen-0.12.0.tgz#932e5738f14b67e7202825b06f8c548cb7d8ef34"
+  integrity sha512-V7jnICJxKqalBrnJSMTW5tB9sGi48gOC325bfcM7TDNUItVOlaMM//rQmuo49ybipk/SyJTnWXgtJnhHCevNJw==
   dependencies:
     google-protobuf "^3.6.1"
 
