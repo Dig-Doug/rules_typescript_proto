@@ -1,7 +1,7 @@
 load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 load("@npm_bazel_typescript//:index.bzl", "ts_library")
-load("@npm_bazel_karma//:index.bzl", "ts_web_test_suite")
+load("@npm_bazel_karma//:index.bzl", "karma_web_test_suite")
 
 # This test checks that the protos can be resolved in a nodejs environment
 jasmine_node_test(
@@ -55,7 +55,7 @@ ts_library(
     ],
 )
 
-ts_web_test_suite(
+karma_web_test_suite(
     name = "proto_with_deps_test_suite",
     browsers = [
         "@io_bazel_rules_webtesting//browsers:chromium-local",
@@ -80,7 +80,7 @@ ts_library(
     ],
 )
 
-ts_web_test_suite(
+karma_web_test_suite(
     name = "pizza_service_proto_test_suite",
     srcs = [
         "require.config.js",
@@ -109,6 +109,8 @@ rollup_bundle(
     output_dir = True,
     deps = [
         ":test_bundling_lib",
+        "@npm//rollup-plugin-commonjs",
+        "@npm//rollup-plugin-node-resolve",
     ],
     format = "cjs",
 )
