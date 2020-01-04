@@ -7,7 +7,7 @@
     "google-protobuf": "3.11.2"
   },
   "devDependencies": {
-    "@bazel/hide-bazel-files": "1.0.0",
+    "@bazel/hide-bazel-files": "1.0.1",
     "@bazel/jasmine": "1.0.1",
     "@bazel/karma": "1.0.0",
     "@bazel/rollup": "1.0.0",
