@@ -39,10 +39,10 @@
   dependencies:
     tmp "0.1.0"
 
-"@bazel/rollup@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@bazel/rollup/-/rollup-1.0.0.tgz#85f38cf07ba8ea192e54c42cb53a44d1fd1f56ac"
-  integrity sha512-pOWwyeM/H+LWRpKm3xuSAXoZ1gl6o8kFh5ltf0tM+ZfqGnSNbakME6ZswfmVj7FHUgF40BXzSoFTUdqgn1xy/w==
+"@bazel/rollup@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@bazel/rollup/-/rollup-1.0.1.tgz#aaef886ff6cb00fc19995479aef4275359b57eee"
+  integrity sha512-LL9eszGoHbw50+59KqqgmHB1AFQKlYeJFDCMzJU5DnAMLWz/bSlf77CaC3iipL7AVQXVqu1aJEviiNYDVGTlig==
 
 "@bazel/typescript@1.0.0":
   version "1.0.0"
