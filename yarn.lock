@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@bazel/hide-bazel-files@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@bazel/hide-bazel-files/-/hide-bazel-files-1.0.1.tgz#bfba5c73f307cd69c25411084023f60cdd89ef01"
-  integrity sha512-3unoDYZIGxtePTa/bhsWZ0pxtI/G9LYr41Kkb1ZpSaSz27ZDvj6Aysbc0u9TNGTZhqkcr/w66OC9pvmeys4YnQ==
+"@bazel/hide-bazel-files@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@bazel/hide-bazel-files/-/hide-bazel-files-1.1.0.tgz#a7d46a4aa3717150b54fde05b2f8b6bab733f493"
+  integrity sha512-JJ9eMKPBodWugC4Wu0QLe0saDZ971RcP2kjZbG1vJfQHn/gnxvw+4nXDRwei5EzxBsGGuLxY1MkNDtRFIfZr5w==
 
 "@bazel/jasmine@1.0.1":
   version "1.0.1"
