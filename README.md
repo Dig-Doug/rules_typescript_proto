@@ -68,7 +68,7 @@ See `//test:pizza_service_proto_test_suite` for an example.
 To get code completion working for the generated protos in your IDE, add the following to your
 `tsconfig.json`:
 
-```json
+```js
 {
   "compilerOptions": {
     "baseUrl": ".",
