@@ -39,10 +39,10 @@
     jasmine-core "~3.4.0"
     v8-coverage "1.0.9"
 
-"@bazel/karma@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@bazel/karma/-/karma-1.0.1.tgz#f60de501367125ece03af1250ccb69d836fee2cc"
-  integrity sha512-AJ7KOx+oWHTAwstTMH95jpPP4MSKnG2eZiTms5OilhLz6KWg+l4hGumJ+jB8ntt/ZlMv9nrLVohS5zjEUyeTYA==
+"@bazel/karma@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@bazel/karma/-/karma-1.1.0.tgz#3340904942acd970964ad40a28177f780d2d658a"
+  integrity sha512-4AwY86r/MNPCcVkR4z5wO9d4dftdSWi7nFnIEFGsl++Mzpgrfc70dGReu35BFC38JavWrEkZuh7RU1d8bbD8WQ==
   dependencies:
     tmp "0.1.0"
 

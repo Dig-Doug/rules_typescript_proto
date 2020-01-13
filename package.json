@@ -9,7 +9,7 @@
   "devDependencies": {
     "@bazel/hide-bazel-files": "1.0.1",
     "@bazel/jasmine": "1.0.1",
-    "@bazel/karma": "1.0.1",
+    "@bazel/karma": "1.1.0",
     "@bazel/rollup": "1.1.0",
     "@bazel/typescript": "1.0.1",
     "@improbable-eng/grpc-web": "0.12.0",
