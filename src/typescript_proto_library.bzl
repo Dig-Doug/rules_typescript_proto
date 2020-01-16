@@ -49,9 +49,9 @@ def _get_input_proto_names(target):
     return " ".join(proto_inputs)
 
 def _build_protoc_command(target, ctx):
-    protoc_command = "%s" % (ctx.file._protoc.path)
+    protoc_command = "%s" % (ctx.executable._protoc.path)
 
-    protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.files._ts_protoc_gen[1].path)
+    protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.executable._ts_protoc_gen.path)
 
     protoc_output_dir = ctx.var["BINDIR"]
     protoc_command += " --ts_out=service=grpc-web:%s" % (protoc_output_dir)
@@ -78,7 +78,7 @@ def _create_post_process_command(target, ctx, js_outputs, js_outputs_es6):
         ] if p])
         file_name = output.basename[:-len(output.extension) - 1]
 
-        convert_command = ctx.files._change_import_style[1].path
+        convert_command = ctx.executable._change_import_style.path
         convert_command += " --workspace_name {}".format(ctx.workspace_name)
         convert_command += " --input_base_path {}".format(file_path)
         convert_command += " --output_module_name {}".format(file_name)
