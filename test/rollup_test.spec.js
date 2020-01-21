@@ -28,6 +28,12 @@ describe('Rollup', () => {
     expect(typeof client.orderPizza).toBe('function');
   });
 
+  it('PizzaServiceClient.orderPizza should return a UnaryResponse', () => {
+    const client = new bundle.PizzaServiceClient('http://localhost', {});
+    const response = client.orderPizza(new bundle.OrderPizzaRequest(), (_) => {}); // This will throw
+    expect(typeof response.cancel).toBe('function');
+  })
+
   it('should follow expected naming styles', () => {
     expect(new bundle.alllowercase().setTest(1)).toBeTruthy();
     expect(new bundle.ALLUPPERCASE().setTest(1)).toBeTruthy();
