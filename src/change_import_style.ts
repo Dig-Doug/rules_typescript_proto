@@ -19,8 +19,8 @@ function main() {
   const umdContents = convertToUmd(args, initialContents);
   fs.writeFileSync(args.output_umd_path, umdContents, 'utf8');
 
-  const commonJsContents = convertToESM(args, initialContents);
-  fs.writeFileSync(args.output_es6_path, commonJsContents, 'utf8');
+  const esmContents = convertToESM(args, initialContents);
+  fs.writeFileSync(args.output_es6_path, esmContents, 'utf8');
 }
 
 function replaceRecursiveFilePaths(args: any) {
@@ -88,7 +88,7 @@ function convertToESM(args: any, initialContents: string): string {
   };
 
   const replaceRequiresWithSubpackageImports = (contents: string) => {
-    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g, 'import * as $1 from $2;')
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g, 'import {$3 as $1} from $2;')
   }
 
   const replaceCJSExportsWithECMAExports = (contents: string) => {
