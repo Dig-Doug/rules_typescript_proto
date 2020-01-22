@@ -1,4 +1,6 @@
-const bundle = require('rules_typescript_proto/test/test_es6_bundling/');
+declare function require(module: string): any;
+
+const bundle = require('rules_typescript_proto/test/test_es6_bundling');
 
 describe('Rollup', () => {
   it('should define Pizza with protobuf API', () => {
