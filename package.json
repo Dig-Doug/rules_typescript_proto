@@ -4,7 +4,7 @@
   "repository": "https://github.com/Dig-Doug/rules_typescript_proto",
   "license": "Apache-2.0",
   "dependencies": {
-    "google-protobuf": "3.11.2"
+    "google-protobuf": "3.11.3"
   },
   "devDependencies": {
     "@bazel/hide-bazel-files": "1.1.0",
