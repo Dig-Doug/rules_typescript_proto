@@ -35,28 +35,31 @@ function removeJsExtensionsFromRequires(contents: string) {
   });
 }
 
+function removeRequireJsModule(contents: string) {
+  return contents.replace(/(require\(.*).js/g, (_, captureGroup: string) => {
+    return captureGroup;
+  });
+}
+
 function convertToUmd(args: any, initialContents: string): string {
   const wrapInAMDModule = (contents: string) => {
     return `// GENERATED CODE DO NOT EDIT
-(function (factory) {
-  if (typeof module === "object" && typeof module.exports === "object") {
-    var v = factory(require, exports);
-    if (v !== undefined) module.exports = v;
-  }
-  else if (typeof define === "function" && define.amd) {
-    define("${args.input_base_path}/${args.output_module_name}",  factory);
-  }
-})(function (require, exports) {
-  ${contents}
-});
+    (function (factory) {
+      if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+      }
+      else if (typeof define === "function" && define.amd) {
+        define("${args.input_base_path}/${args.output_module_name}",  factory);
+      }
+    })(function (require, exports) {
+      ${contents.replace(/module.exports =/g, 'return')}
+    });
 `;
   };
 
-  const transformations: ((c: string) => string)[] = [
-    wrapInAMDModule,
-    replaceRecursiveFilePaths(args),
-    removeJsExtensionsFromRequires,
-  ];
+  const transformations: ((c: string) => string)[] =
+      [wrapInAMDModule, replaceRecursiveFilePaths(args), removeJsExtensionsFromRequires];
   return transformations.reduce((currentContents, transform) => {
     return transform(currentContents);
   }, initialContents);
@@ -66,34 +69,38 @@ function convertToUmd(args: any, initialContents: string): string {
 // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
 function convertToESM(args: any, initialContents: string): string {
   const replaceGoogExtendWithExports = (contents: string) => {
-    return contents.replace(/goog\.object\.extend\(exports, ([\w\.]+)\);/g, (_, packageName: string) => {
-      const exportSymbols = /goog\.exportSymbol\('([\w\.]+)',.*\);/g;
-      const symbols = [];
+    return contents.replace(/goog\.object\.extend\(exports, ([\w\.]+)\);/g,
+                            (_, packageName: string) => {
+                              const exportSymbols = /goog\.exportSymbol\('([\w\.]+)',.*\);/g;
+                              const symbols = [];
 
-      let match: RegExpExecArray;
-      while (match = exportSymbols.exec(initialContents)) {
-        // We want to ignore embedded export targets, IE: `DeliveryPerson.DataCase`.
-        const exportTarget = match[1].substr(packageName.length + 1);
-        if (!exportTarget.includes('.')) {
-          symbols.push(exportTarget);
-        }
-      }
+                              let match: RegExpExecArray;
+                              while ((match = exportSymbols.exec(initialContents))) {
+                                // We want to ignore embedded export targets, IE:
+                                // `DeliveryPerson.DataCase`.
+                                const exportTarget = match[1].substr(packageName.length + 1);
+                                if (!exportTarget.includes('.')) {
+                                  symbols.push(exportTarget);
+                                }
+                              }
 
-      return `export const { ${symbols.join(', ')} } = ${packageName}`;
-    });
+                              return `export const { ${symbols.join(', ')} } = ${packageName}`;
+                            });
   };
 
   const replaceRequiresWithImports = (contents: string) => {
-    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\);/g, 'import * as $1 from $2;');
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\);/g,
+                            'import * as $1 from $2;');
   };
 
   const replaceRequiresWithSubpackageImports = (contents: string) => {
-    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g, 'import * as $1 from $2;')
-  }
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g,
+                            'import * as $1 from $2;');
+  };
 
   const replaceCJSExportsWithECMAExports = (contents: string) => {
-    return contents.replace(/exports\.([\w\d_]+) = .*;/g, 'export { $1 };')
-  }
+    return contents.replace(/exports\.([\w\d_]+) = .*;/g, 'export { $1 };');
+  };
 
   const transformations: ((c: string) => string)[] = [
     replaceRecursiveFilePaths(args),
@@ -101,7 +108,7 @@ function convertToESM(args: any, initialContents: string): string {
     replaceGoogExtendWithExports,
     replaceRequiresWithImports,
     replaceRequiresWithSubpackageImports,
-    replaceCJSExportsWithECMAExports,
+    replaceCJSExportsWithECMAExports
   ];
   return transformations.reduce((currentContents, transform) => {
     return transform(currentContents);

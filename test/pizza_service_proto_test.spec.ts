@@ -1,6 +1,8 @@
+import 'google-protobuf';
+
 import {Pizza, PizzaSize} from 'rules_typescript_proto/test/proto/common/pizza_pb';
+import {PizzaServiceClient} from 'rules_typescript_proto/test/proto/pizza_service_grpc_web_pb';
 import {OrderPizzaRequest, OrderPizzaResponse} from 'rules_typescript_proto/test/proto/pizza_service_pb';
-import {PizzaService} from 'rules_typescript_proto/test/proto/pizza_service_pb_service';
 
 declare function require(module: string): any;
 
@@ -11,7 +13,7 @@ describe('DeliveryPerson', () => {
   });
 
   it('Service imported class should not be null', () => {
-    expect(PizzaService).toBeDefined();
+    expect(PizzaServiceClient).toBeDefined();
   });
 
   it('Generated code seems to work', () => {

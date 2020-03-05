@@ -7,8 +7,8 @@ load("@npm_bazel_karma//:index.bzl", "karma_web_test_suite")
 jasmine_node_test(
     name = "commonjs_test",
     data = [
-        "@npm//@improbable-eng/grpc-web",
         "@npm//google-protobuf",
+        "@npm//grpc-web",
     ],
     deps = [
         ":commonjs_test_lib",
@@ -30,18 +30,6 @@ ts_library(
 
 # Copy the google-protobuf library and convert it to a AMD module so it can be loaded in the
 # RequireJS test environment.
-genrule(
-    name = "google_protobuf_requirejs",
-    srcs = [
-        "@npm//:node_modules/google-protobuf/google-protobuf.js",
-    ],
-    outs = [
-        "google-protobuf.js",
-    ],
-    cmd = """echo "define('google-protobuf', function(require, exports, module) {" > $@ \
-             && cat $< >> $@ \
-             && echo '});' >> $@""",
-)
 
 ts_library(
     name = "proto_with_deps_test",
@@ -62,7 +50,6 @@ karma_web_test_suite(
     ],
     tags = ["native"],
     deps = [
-        ":google_protobuf_requirejs",
         ":proto_with_deps_test",
     ],
 )
@@ -73,9 +60,9 @@ ts_library(
     srcs = ["pizza_service_proto_test.spec.ts"],
     tsconfig = ":tsconfig.json",
     deps = [
-        "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:pizza_ts_proto",
         "@npm//@types/jasmine",
+        "//test/proto:pizza_service_ts_proto",
         # Don't put delivery_person_ts_proto here, we want to test it is included transitively
     ],
 )
@@ -83,36 +70,30 @@ ts_library(
 karma_web_test_suite(
     name = "pizza_service_proto_test_suite",
     srcs = [
-        "require.config.js",
+        "@npm//google-protobuf:google-protobuf__umd",
+        "@npm//grpc-web:grpc-web__umd",
     ],
     browsers = [
         "@io_bazel_rules_webtesting//browsers:chromium-local",
     ],
-    # Files are served under /base/<WORKSPACE_NAME>/<path>
-    static_files = [
-        "@npm//:node_modules/@improbable-eng/grpc-web/dist/grpc-web-client.umd.js",
-        "@npm//:node_modules/browser-headers/dist/browser-headers.umd.js",
-    ],
     tags = ["native"],
     deps = [
-        ":google_protobuf_requirejs",
         ":pizza_service_proto_test",
     ],
 )
 
 rollup_bundle(
     name = "test_es6_bundling",
-    config_file = "rollup.config.js",
     entry_points = {
         ":test_bundling.ts": "index",
     },
+    format = "cjs",
     output_dir = True,
     deps = [
         ":test_bundling_lib",
         "@npm//rollup-plugin-commonjs",
         "@npm//rollup-plugin-node-resolve",
     ],
-    format = "cjs",
 )
 
 ts_library(
@@ -121,20 +102,20 @@ ts_library(
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
         "//test/proto:naming_styles_ts_proto",
-        "//test/proto/common:pizza_ts_proto",
         "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
+        "//test/proto/common:pizza_ts_proto",
         "@npm//google-protobuf",
-        "@npm//@improbable-eng/grpc-web",
+        "@npm//grpc-web",
     ],
 )
 
 jasmine_node_test(
     name = "rollup_test",
     srcs = [
-        ":rollup_test.spec.js"
+        ":rollup_test.spec.js",
     ],
     data = [
-        ":test_es6_bundling"
-    ]
+        ":test_es6_bundling",
+    ],
 )

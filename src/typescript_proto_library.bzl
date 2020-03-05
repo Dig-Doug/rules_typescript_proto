@@ -51,11 +51,11 @@ def _get_input_proto_names(target):
 def _build_protoc_command(target, ctx):
     protoc_command = "%s" % (ctx.executable._protoc.path)
 
-    protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.executable._ts_protoc_gen.path)
+    protoc_command += " --plugin=protoc-gen-grpc-web=%s" % (ctx.executable._protoc_gen_grpc_web.path)
 
     protoc_output_dir = ctx.var["BINDIR"]
-    protoc_command += " --ts_out=service=grpc-web:%s" % (protoc_output_dir)
-    protoc_command += " --js_out=import_style=commonjs,binary:%s" % (protoc_output_dir)
+    protoc_command += " --grpc-web_out=import_style=commonjs+dts,mode=grpcweb:%s" % (protoc_output_dir)
+    protoc_command += " --js_out=import_style=commonjs:%s" % (protoc_output_dir)
 
     descriptor_sets_paths = [desc.path for desc in target[ProtoInfo].transitive_descriptor_sets.to_list()]
     protoc_command += " --descriptor_set_in=%s" % (":".join(descriptor_sets_paths))
@@ -98,15 +98,18 @@ def _get_outputs(target, ctx):
     dts_outputs = []
     for src in target[ProtoInfo].direct_sources:
         file_name = src.basename[:-len(src.extension) - 1]
-        for f in ["_pb", "_pb_service"]:
+        generated_files = ["_pb"]
+        if file_name.endswith("_service"):
+            generated_files.append("_grpc_web_pb")
+        for f in generated_files:
             full_name = file_name + f
             output = ctx.actions.declare_file(full_name + ".js")
             js_outputs.append(output)
             output_es6 = ctx.actions.declare_file(full_name + ".mjs")
             js_outputs_es6.append(output_es6)
 
-        for f in ["_pb.d.ts", "_pb_service.d.ts"]:
-            output = ctx.actions.declare_file(file_name + f)
+        for f in generated_files:
+            output = ctx.actions.declare_file(file_name + f + ".d.ts")
             dts_outputs.append(output)
 
     return [js_outputs, js_outputs_es6, dts_outputs]
@@ -129,11 +132,14 @@ def typescript_proto_library_aspect_(target, ctx):
 
     tools = []
     tools.extend(ctx.files._protoc)
-    tools.extend(ctx.files._ts_protoc_gen)
+    tools.extend(ctx.files._protoc_gen_grpc_web)
     tools.extend(ctx.files._change_import_style)
 
     ctx.actions.run_shell(
-        inputs = depset(_get_protoc_inputs(target, ctx)),
+        inputs = depset(
+            direct = _get_protoc_inputs(target, ctx),
+            transitive = [depset(ctx.files._well_known_protos)],
+        ),
         outputs = protoc_outputs,
         progress_message = "Creating Typescript pb files %s" % ctx.label,
         command = " && ".join(all_commands),
@@ -169,11 +175,15 @@ typescript_proto_library_aspect = aspect(
     implementation = typescript_proto_library_aspect_,
     attr_aspects = ["deps"],
     attrs = {
-        "_ts_protoc_gen": attr.label(
+        "_protoc_gen_grpc_web": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
-            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+            default = Label("@com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web"),
+        ),
+        "_well_known_protos": attr.label(
+            default = "@com_google_protobuf//:well_known_protos",
+            allow_files = True,
         ),
         "_protoc": attr.label(
             allow_single_file = True,
@@ -238,11 +248,15 @@ typescript_proto_library = rule(
             providers = [ProtoInfo],
             aspects = [typescript_proto_library_aspect],
         ),
-        "_ts_protoc_gen": attr.label(
+        "_protoc_gen_grpc_web": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
-            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+            default = Label("@com_github_grpc_grpc_web//javascript/net/grpc/web:protoc-gen-grpc-web"),
+        ),
+        "_well_known_protos": attr.label(
+            default = "@com_google_protobuf//:well_known_protos",
+            allow_files = True,
         ),
         "_protoc": attr.label(
             allow_single_file = True,
