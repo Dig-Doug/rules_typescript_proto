@@ -6,6 +6,10 @@
     {
       "packagePatterns": [ "@bazel" ],
       "groupName": "@bazel"
+    },
+    {
+      "automerge": true,
+      "automergeType": "branch"
     }
   ]
 }
