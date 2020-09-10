@@ -1,7 +1,7 @@
-load("@npm_bazel_jasmine//:index.bzl", "jasmine_node_test")
-load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
-load("@npm_bazel_typescript//:index.bzl", "ts_library")
-load("@npm_bazel_karma//:index.bzl", "karma_web_test_suite")
+load("@build_bazel_rules_nodejs//packages/jasmine:index.bzl", "jasmine_node_test")
+load("@build_bazel_rules_nodejs//packages/rollup:index.bzl", "rollup_bundle")
+load("@build_bazel_rules_nodejs//packages/typescript:index.bzl", "ts_library")
+load("@build_bazel_rules_nodejs//packages/karma:index.bzl", "karma_web_test_suite")
 
 # This test checks that the protos can be resolved in a nodejs environment
 jasmine_node_test(
@@ -106,13 +106,14 @@ rollup_bundle(
     entry_points = {
         ":test_bundling.ts": "index",
     },
+    format = "cjs",
+    link_workspace_root = True,
     output_dir = True,
     deps = [
         ":test_bundling_lib",
         "@npm//rollup-plugin-commonjs",
         "@npm//rollup-plugin-node-resolve",
     ],
-    format = "cjs",
 )
 
 ts_library(
@@ -121,20 +122,20 @@ ts_library(
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
         "//test/proto:naming_styles_ts_proto",
-        "//test/proto/common:pizza_ts_proto",
         "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
-        "@npm//google-protobuf",
+        "//test/proto/common:pizza_ts_proto",
         "@npm//@improbable-eng/grpc-web",
+        "@npm//google-protobuf",
     ],
 )
 
 jasmine_node_test(
     name = "rollup_test",
     srcs = [
-        ":rollup_test.spec.js"
+        ":rollup_test.spec.js",
     ],
     data = [
-        ":test_es6_bundling"
-    ]
+        ":test_es6_bundling",
+    ],
 )
