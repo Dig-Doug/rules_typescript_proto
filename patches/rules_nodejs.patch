@@ -1,0 +1,11 @@
+diff --git packages/rollup/bin/BUILD.bazel packages/rollup/bin/BUILD.bazel
+index 883b0665..2401e645 100644
+--- packages/rollup/bin/BUILD.bazel
++++ packages/rollup/bin/BUILD.bazel
+@@ -17,5 +17,5 @@ nodejs_binary(
+         "@npm//rollup",
+     ],
+     entry_point = "//packages/rollup:index.js",
+-    visibility = ["//:__subpackages__"],
++    visibility = ["//visibility:public"],
+ )
