@@ -24,6 +24,8 @@ ts_library(
     deps = [
         "//test/proto:pizza_service_ts_proto",
         "//test/proto/common:delivery_person_ts_proto",
+        "@npm//google-protobuf",
+        "@npm//@types/google-protobuf",
         "@npm//@types/jasmine",
     ],
 )

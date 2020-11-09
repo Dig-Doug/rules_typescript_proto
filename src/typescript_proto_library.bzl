@@ -24,10 +24,13 @@ def _proto_path(proto):
         path = path[len(root):]
     if path.startswith("/"):
         path = path[1:]
-    if path.startswith(ws):
+    if path.startswith(ws) and len(ws) > 0:
         path = path[len(ws):]
     if path.startswith("/"):
         path = path[1:]
+    if path.startswith("_virtual_imports/"):
+        path = path.split("/")[2:]
+        path = "/".join(path)
     return path
 
 def _get_protoc_inputs(target, ctx):
@@ -53,7 +56,7 @@ def _build_protoc_command(target, ctx):
 
     protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.executable._ts_protoc_gen.path)
 
-    protoc_output_dir = ctx.var["BINDIR"]
+    protoc_output_dir = ctx.bin_dir.path + "/" + ctx.label.workspace_root
     protoc_command += " --ts_out=service=grpc-web:%s" % (protoc_output_dir)
     protoc_command += " --js_out=import_style=commonjs,binary:%s" % (protoc_output_dir)
 
@@ -97,7 +100,13 @@ def _get_outputs(target, ctx):
     js_outputs_es6 = []
     dts_outputs = []
     for src in target[ProtoInfo].direct_sources:
-        file_name = src.basename[:-len(src.extension) - 1]
+        # workspace_root is empty for our local workspace, or external/other_workspace
+        # for @other_workspace//
+        if ctx.label.workspace_root == "":
+            file_name = src.basename[:-len(src.extension) - 1]
+        else:
+            file_name = _proto_path(src)[:-len(src.extension) - 1]
+
         for f in ["_pb", "_pb_service"]:
             full_name = file_name + f
             output = ctx.actions.declare_file(full_name + ".js")
