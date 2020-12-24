@@ -1,9 +1,9 @@
 load("//src:typescript_proto_build.bzl", "typescript_proto_build")
 
-def typescript_grpc_web_library(name, proto):
+def typescript_proto_library(name, proto):
     typescript_proto_build(
         name = name,
         proto = proto,
 
-        generate = "grpc-web",
+        generate = "base",
     )
