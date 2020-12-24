@@ -310,14 +310,6 @@ def _typescript_proto_library_impl(ctx):
         ],
     )
 
-def typescript_proto_library(name, proto):
-    typescript_proto_build(
-        name = name,
-        proto = proto,
-
-        generate = "base",
-    )
-
 typescript_proto_build = rule(
     attrs = {
         "proto": attr.label(
