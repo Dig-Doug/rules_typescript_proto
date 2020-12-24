@@ -26,10 +26,10 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_typescript_proto",
-    sha256 = "cca55a4a8eb8489e8c8341355d9e69937685d831792d71c3051170e1c040d310",
-    strip_prefix = "rules_typescript_proto-0.0.6",
+    sha256 = "8e16f3c3d2ed8abc8935b9d177f056d1920b70ac1aff94477aa9761362982123",
+    strip_prefix = "rules_typescript_proto-1.0.0",
     urls = [
-        "https://github.com/Dig-Doug/rules_typescript_proto/archive/0.0.6.tar.gz",
+        "https://github.com/Dig-Doug/rules_typescript_proto/archive/1.0.0.tar.gz",
     ],
 )
 
@@ -65,6 +65,8 @@ will need to include the following dependencies at runtime yourself:
 
 For generating grpc output files, you'll also need the following in your `BUILD` file:
 ```python
+load("@rules_typescript_proto//:index.bzl", "typescript_grpc_web_library", "typescript_grpc_node_library")
+
 # For grpc-web support use:
 typescript_grpc_web_library(
   name = "test_ts_grpc_web",
