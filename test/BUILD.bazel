@@ -77,9 +77,33 @@ ts_library(
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:pizza_ts_base_proto",
-        "//test/proto/common:pizza_ts_grpc_web_proto",
         "@npm//@types/jasmine",
         # Don't put delivery_person_ts_proto here, we want to test it is included transitively
+    ],
+)
+
+ts_library(
+    name = "pizza_service_proto_grpc_node_test",
+    testonly = 1,
+    srcs = ["pizza_service_proto_grpc_node_test.spec.ts"],
+    tsconfig = ":tsconfig.json",
+    deps = [
+        "//test/proto:pizza_service_ts_base_proto",
+        "//test/proto:pizza_service_ts_grpc_node_proto",
+        "//test/proto/common:pizza_ts_base_proto",
+        "@npm//@types/jasmine",
+        # Don't put delivery_person_ts_proto here, we want to test it is included transitively
+    ],
+)
+
+jasmine_node_test(
+    name = "grpc_node_test",
+    data = [
+        "@npm//grpc",
+        "@npm//google-protobuf",
+    ],
+    deps = [
+        ":pizza_service_proto_grpc_node_test",
     ],
 )
 
@@ -125,9 +149,10 @@ ts_library(
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
         "//test/proto:naming_styles_ts_proto",
-        "//test/proto:pizza_service_ts_proto",
+        "//test/proto:pizza_service_ts_base_proto",
+        "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
-        "//test/proto/common:pizza_ts_proto",
+        "//test/proto/common:pizza_ts_base_proto",
         "@npm//@improbable-eng/grpc-web",
         "@npm//google-protobuf",
     ],
