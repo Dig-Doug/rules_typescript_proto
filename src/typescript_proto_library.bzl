@@ -5,7 +5,7 @@ This file primarily exposes the typescript_proto_build rule which supports:
 - TypeScript generation of services and clients using grpc-node with references to grpc
 - TypeScript generation of services and clients using grpc-node with references to grpc-js
 
-Ideally, this rule wouldn't be used directly and instead one of these macros would be used:
+This rule should not be used directly. Use one of these instead:
 - typescript_proto_library
 - typescript_grpc_node_library
 - typescript_grpc_web_library
@@ -71,7 +71,7 @@ def _build_protoc_command(target, ctx):
     if ctx.attr.generate != "base":
         ts_flags.append("service=" + ctx.attr.generate)
 
-    if ctx.attr.mode == "grpc-js":
+    if ctx.attr.grpc_node_mode == "grpc-js":
         ts_flags.append("mode=grpc-js")
         grpc_flag = "grpc_js:"
 
@@ -129,29 +129,34 @@ def _get_outputs(target, ctx):
     js_outputs_es6 = []
     dts_outputs = []
 
-    files = []
-    typescript_files = []
+    js_file_suffixes = []
+    mjs_file_suffixes = []
+    ts_file_suffixes = []
 
     if ctx.attr.generate == "base":
-        files.append("_pb")
-        typescript_files.append("_pb.d.ts")
+        js_file_suffixes.append("_pb.js")
+        mjs_file_suffixes.append("_pb.mjs")
+        ts_file_suffixes.append("_pb.d.ts")
     if ctx.attr.generate == "grpc-node":
-        files.append("_grpc_pb")
-        typescript_files.append("_grpc_pb.d.ts")
+        js_file_suffixes.append("_grpc_pb.js")
+        mjs_file_suffixes.append("_grpc_pb.mjs")
+        ts_file_suffixes.append("_grpc_pb.d.ts")
     if ctx.attr.generate == "grpc-web":
-        files.append("_pb_service")
-        typescript_files.append("_pb_service.d.ts")
+        js_file_suffixes.append("_pb_service.js")
+        mjs_file_suffixes.append("_pb_service.mjs")
+        ts_file_suffixes.append("_pb_service.d.ts")
 
     for src in target[ProtoInfo].direct_sources:
         file_name = src.basename[:-len(src.extension) - 1]
-        for f in files:
-            full_name = file_name + f
-            output = ctx.actions.declare_file(full_name + ".js")
+        for f in js_file_suffixes:
+            output = ctx.actions.declare_file(file_name + f)
             js_outputs.append(output)
-            output_es6 = ctx.actions.declare_file(full_name + ".mjs")
+
+        for f in mjs_file_suffixes:
+            output_es6 = ctx.actions.declare_file(file_name + f)
             js_outputs_es6.append(output_es6)
 
-        for f in typescript_files:
+        for f in ts_file_suffixes:
             output = ctx.actions.declare_file(file_name + f)
             dts_outputs.append(output)
 
@@ -164,12 +169,11 @@ def typescript_proto_library_aspect_(target, ctx):
 
     Handles running protoc to produce the generated JS and TS files.
     """
+    if ctx.attr.grpc_node_mode == "grpc-js" and ctx.attr.generate != "grpc-node":
+        fail("Mode must only be used with grpc-node rule")
 
     [js_outputs, js_outputs_es6, dts_outputs] = _get_outputs(target, ctx)
     protoc_outputs = dts_outputs + js_outputs + js_outputs_es6
-
-    if ctx.attr.mode == "grpc-js" and ctx.attr.generate != "grpc-node":
-        fail("Mode must only be used with grpc-node rule")
 
     all_commands = [
         _build_protoc_command(target, ctx),
@@ -182,7 +186,7 @@ def typescript_proto_library_aspect_(target, ctx):
     tools.extend(ctx.files._grpc_protoc_gen)
     tools.extend(ctx.files._change_import_style)
 
-    mode = (" " + ctx.attr.mode) if bool(ctx.attr.mode) else ""
+    mode = (" " + ctx.attr.grpc_node_mode) if bool(ctx.attr.grpc_node_mode) else ""
 
     ctx.actions.run_shell(
         inputs = depset(_get_protoc_inputs(target, ctx)),
@@ -231,7 +235,7 @@ typescript_proto_library_aspect = aspect(
                 "grpc-web",
             ],
         ),
-        "mode": attr.string(
+        "grpc_node_mode": attr.string(
             mandatory = False,
             default = "",
             values = [
@@ -333,7 +337,7 @@ typescript_proto_build = rule(
                 "grpc-web",
             ],
         ),
-        "mode": attr.string(
+        "grpc_node_mode": attr.string(
             doc = "when using grpc-node, either the grpc library can be referenced (default) or grpc-js",
             mandatory = False,
             default = "",

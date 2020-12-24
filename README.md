@@ -8,8 +8,6 @@ generate service definitions for use by [grpc-web](https://github.com/improbable
 
 ## Getting Started
 
-> If you're migrating from the ts-protoc-gen rules, see [here](docs/migrating_from_ts_protoc_gen.md) for a migration guide
-
 > If you're upgrading from a previous version and experiencing issues with missing `_pb_service.d.ts` files, see
 > [here](docs/migrating_to_multi_rules.md) for a migration guide.
 
@@ -83,7 +81,7 @@ typescript_grpc_node_library(
 typescript_grpc_node_library(
   name = "test_ts_grpc_node_grpc_js",
   proto = ":test_proto",
-  mode = "grpc-js",
+  use_grpc_js = True,
 )
 ```
 

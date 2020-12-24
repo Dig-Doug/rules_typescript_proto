@@ -1,5 +1,5 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@rules_typescript_proto//:index.bzl", "typescript_proto_library",  "typescript_grpc_node_library", "typescript_grpc_web_library")
+load("@rules_typescript_proto//:index.bzl", "typescript_proto_library")
 
 package(default_visibility = ["//test:__subpackages__"])
 
