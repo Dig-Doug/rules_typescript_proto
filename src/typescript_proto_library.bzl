@@ -1,7 +1,19 @@
+"""
+This file primarily exposes the typescript_proto_build rule which supports:
+- TypeScript generation of protobuf messages from a proto file
+- TypeScript generation of services and clients using grpc-web
+- TypeScript generation of services and clients using grpc-node with references to grpc
+- TypeScript generation of services and clients using grpc-node with references to grpc-js
+
+This rule should not be used directly. Use one of these instead:
+- typescript_proto_library
+- typescript_grpc_node_library
+- typescript_grpc_web_library
+"""
 load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "JSEcmaScriptModuleInfo", "JSNamedModuleInfo")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
-TypescriptProtoLibraryAspect = provider(
+TypescriptProtoLibraryAspect = provider("establishes transitive dependencies for typescript on protobuf files",
     fields = {
         "es5_outputs": "The ES5 JS files produced directly from the src protos",
         "es6_outputs": "The ES6 JS files produced directly from the src protos",
@@ -14,9 +26,10 @@ TypescriptProtoLibraryAspect = provider(
 
 def _proto_path(proto):
     """
-    The proto path is not really a file path
-    It's the path to the proto that was seen when the descriptor file was generated.
+    Normalizes the path to an actual proto file path.
     """
+    # The proto path is not really a file path.
+    # It's the path to the proto that was seen when the descriptor file was generated.
     path = proto.path
     root = proto.root.path
     ws = proto.owner.workspace_root
@@ -49,13 +62,32 @@ def _get_input_proto_names(target):
     return " ".join(proto_inputs)
 
 def _build_protoc_command(target, ctx):
+    """
+    Returns the protoc command that includes all of the proper flags based on the attributes passed.
+    """
+    ts_flags = []
+    grpc_flag = ""
+
+    if ctx.attr.generate != "base":
+        ts_flags.append("service=" + ctx.attr.generate)
+
+    if ctx.attr.grpc_node_mode == "grpc-js":
+        ts_flags.append("mode=grpc-js")
+        grpc_flag = "grpc_js:"
+
     protoc_command = "%s" % (ctx.executable._protoc.path)
 
     protoc_command += " --plugin=protoc-gen-ts=%s" % (ctx.executable._ts_protoc_gen.path)
 
+    if ctx.attr.generate == "grpc-node":
+        protoc_command += " --plugin=protoc-gen-grpc=%s" % (ctx.executable._grpc_protoc_gen.path)
+
     protoc_output_dir = ctx.var["BINDIR"]
-    protoc_command += " --ts_out=service=grpc-web:%s" % (protoc_output_dir)
+    protoc_command += " --ts_out=%s%s%s" % (",".join(ts_flags), ":" if bool(ts_flags) else "", protoc_output_dir)
     protoc_command += " --js_out=import_style=commonjs,binary:%s" % (protoc_output_dir)
+
+    if ctx.attr.generate == "grpc-node":
+        protoc_command += " --grpc_out=%s%s" % (grpc_flag, protoc_output_dir)
 
     descriptor_sets_paths = [desc.path for desc in target[ProtoInfo].transitive_descriptor_sets.to_list()]
     protoc_command += " --descriptor_set_in=%s" % (":".join(descriptor_sets_paths))
@@ -96,16 +128,35 @@ def _get_outputs(target, ctx):
     js_outputs = []
     js_outputs_es6 = []
     dts_outputs = []
+
+    js_file_suffixes = []
+    mjs_file_suffixes = []
+    ts_file_suffixes = []
+
+    if ctx.attr.generate == "base":
+        js_file_suffixes.append("_pb.js")
+        mjs_file_suffixes.append("_pb.mjs")
+        ts_file_suffixes.append("_pb.d.ts")
+    if ctx.attr.generate == "grpc-node":
+        js_file_suffixes.append("_grpc_pb.js")
+        mjs_file_suffixes.append("_grpc_pb.mjs")
+        ts_file_suffixes.append("_grpc_pb.d.ts")
+    if ctx.attr.generate == "grpc-web":
+        js_file_suffixes.append("_pb_service.js")
+        mjs_file_suffixes.append("_pb_service.mjs")
+        ts_file_suffixes.append("_pb_service.d.ts")
+
     for src in target[ProtoInfo].direct_sources:
         file_name = src.basename[:-len(src.extension) - 1]
-        for f in ["_pb", "_pb_service"]:
-            full_name = file_name + f
-            output = ctx.actions.declare_file(full_name + ".js")
+        for f in js_file_suffixes:
+            output = ctx.actions.declare_file(file_name + f)
             js_outputs.append(output)
-            output_es6 = ctx.actions.declare_file(full_name + ".mjs")
+
+        for f in mjs_file_suffixes:
+            output_es6 = ctx.actions.declare_file(file_name + f)
             js_outputs_es6.append(output_es6)
 
-        for f in ["_pb.d.ts", "_pb_service.d.ts"]:
+        for f in ts_file_suffixes:
             output = ctx.actions.declare_file(file_name + f)
             dts_outputs.append(output)
 
@@ -118,6 +169,8 @@ def typescript_proto_library_aspect_(target, ctx):
 
     Handles running protoc to produce the generated JS and TS files.
     """
+    if ctx.attr.grpc_node_mode == "grpc-js" and ctx.attr.generate != "grpc-node":
+        fail("Mode must only be used with grpc-node rule")
 
     [js_outputs, js_outputs_es6, dts_outputs] = _get_outputs(target, ctx)
     protoc_outputs = dts_outputs + js_outputs + js_outputs_es6
@@ -130,12 +183,15 @@ def typescript_proto_library_aspect_(target, ctx):
     tools = []
     tools.extend(ctx.files._protoc)
     tools.extend(ctx.files._ts_protoc_gen)
+    tools.extend(ctx.files._grpc_protoc_gen)
     tools.extend(ctx.files._change_import_style)
+
+    mode = (" " + ctx.attr.grpc_node_mode) if bool(ctx.attr.grpc_node_mode) else ""
 
     ctx.actions.run_shell(
         inputs = depset(_get_protoc_inputs(target, ctx)),
         outputs = protoc_outputs,
-        progress_message = "Creating Typescript pb files %s" % ctx.label,
+        progress_message = "Creating Typescript pb %s%s files %s" % (ctx.attr.generate, mode, ctx.label),
         command = " && ".join(all_commands),
         tools = depset(tools),
     )
@@ -169,11 +225,35 @@ typescript_proto_library_aspect = aspect(
     implementation = typescript_proto_library_aspect_,
     attr_aspects = ["deps"],
     attrs = {
+        # See matching rule docs for typescript_proto_library for brief documentation
+        "generate": attr.string(
+            mandatory = False,
+            default = "base",
+            values = [
+                "base",
+                "grpc-node",
+                "grpc-web",
+            ],
+        ),
+        "grpc_node_mode": attr.string(
+            mandatory = False,
+            default = "",
+            values = [
+                "",
+                "grpc-js",
+            ],
+        ),
         "_ts_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
             default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+        ),
+        "_grpc_protoc_gen": attr.label(
+            allow_files = True,
+            executable = True,
+            cfg = "host",
+            default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,
@@ -230,19 +310,53 @@ def _typescript_proto_library_impl(ctx):
         ],
     )
 
-typescript_proto_library = rule(
+def typescript_proto_library(name, proto):
+    typescript_proto_build(
+        name = name,
+        proto = proto,
+
+        generate = "base",
+    )
+
+typescript_proto_build = rule(
     attrs = {
         "proto": attr.label(
+            doc = "the protobuf file that should be processed",
             mandatory = True,
             allow_single_file = True,
             providers = [ProtoInfo],
             aspects = [typescript_proto_library_aspect],
+        ),
+        "generate": attr.string(
+            doc = "which format to output, with 'base' being the protobuf messages",
+            mandatory = False,
+            default = "base",
+            values = [
+                "base",
+                "grpc-node",
+                "grpc-web",
+            ],
+        ),
+        "grpc_node_mode": attr.string(
+            doc = "when using grpc-node, either the grpc library can be referenced (default) or grpc-js",
+            mandatory = False,
+            default = "",
+            values = [
+                "",
+                "grpc-js",
+            ],
         ),
         "_ts_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
             cfg = "host",
             default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+        ),
+        "_grpc_protoc_gen": attr.label(
+            allow_files = True,
+            executable = True,
+            cfg = "host",
+            default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,

@@ -3,11 +3,13 @@
 
 Bazel rules for generating TypeScript declarations for JavaScript protocol buffers using the 
 [ts-protoc-gen](https://github.com/improbable-eng/ts-protoc-gen) protoc plugin. These rules can also
-generate service definitions for use by [grpc-web](https://github.com/improbable-eng/grpc-web).
+generate service definitions for use by [grpc-web](https://github.com/improbable-eng/grpc-web) or
+[grpc-node](https://github.com/grpc/grpc-node).
 
 ## Getting Started
 
-> If you're migrating from the ts-protoc-gen rules, see [here](docs/migrating_from_ts_protoc_gen.md) for a migration guide
+> If you're upgrading from a previous version and experiencing issues with missing `_pb_service.d.ts` files, see
+> [here](docs/migrating_to_multi_rules.md) for a migration guide.
 
 Before you can use `rules_typescript_proto`, you must first setup:
 
@@ -61,7 +63,29 @@ will need to include the following dependencies at runtime yourself:
 - `@improbable-eng/grpc-web`
 - `browser-headers`
 
-See `//test:pizza_service_proto_test_suite` for an example.
+For generating grpc output files, you'll also need the following in your `BUILD` file:
+```python
+# For grpc-web support use:
+typescript_grpc_web_library(
+  name = "test_ts_grpc_web",
+  proto = ":test_proto",
+)
+
+# For grpc-node support use:
+typescript_grpc_node_library(
+  name = "test_ts_grpc_node",
+  proto = ":test_proto",
+)
+
+# For grpc-node support with grpc-js use:
+typescript_grpc_node_library(
+  name = "test_ts_grpc_node_grpc_js",
+  proto = ":test_proto",
+  use_grpc_js = True,
+)
+```
+
+See `//test:pizza_service_proto_test_suite` and `//test:grpc_node_test` for examples.
 
 ## IDE Code Completion
 
@@ -83,7 +107,8 @@ To get code completion working for the generated protos in your IDE, add the fol
 }
 ```
 
-> NOTE: This has only been tested in IntelliJ with the bazel plugin
+> NOTE: This has only been tested in IntelliJ and VSCode with the bazel plugin
+> NOTE: This assumes a default `--symlink_prefix` value.
 
 ## Contributing
 

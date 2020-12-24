@@ -1,8 +1,8 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_typescript_proto//:index.bzl", "typescript_proto_library")
 
 package(default_visibility = ["//test:__subpackages__"])
 
-load("@rules_typescript_proto//:index.bzl", "typescript_proto_library")
 
 proto_library(
     name = "delivery_person_proto",
@@ -27,6 +27,6 @@ proto_library(
 )
 
 typescript_proto_library(
-    name = "pizza_ts_proto",
+    name = "pizza_ts_base_proto",
     proto = ":pizza_proto",
 )
