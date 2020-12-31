@@ -1,4 +1,4 @@
-load("@build_bazel_rules_nodejs//packages/typescript:index.bzl", "ts_config")
+load("@npm//@bazel/typescript:index.bzl", "ts_config")
 
 package(default_visibility = ["//:__subpackages__"])
 

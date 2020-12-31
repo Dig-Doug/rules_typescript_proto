@@ -6,12 +6,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "9cf91081afb192338a827dce92d4fdd5eabb809e3b20439611d6f440ac9b7c4e",
-    strip_prefix = "rules_nodejs-9ff4508deb9aece23890feb1404abb9a6c3d1b94",
-    urls = [
-        "https://github.com/bazelbuild/rules_nodejs/archive/9ff4508deb9aece23890feb1404abb9a6c3d1b94.tar.gz",
-    ],
-    patches = ["//:patches/rules_nodejs.patch"],
+    sha256 = "6142e9586162b179fdd570a55e50d1332e7d9c030efd853453438d607569721d",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/3.0.0/rules_nodejs-3.0.0.tar.gz"],
 )
 
 http_archive(
@@ -53,10 +49,6 @@ protobuf_deps()
 load("@build_bazel_rules_nodejs//:package.bzl", "rules_nodejs_dev_dependencies")
 
 rules_nodejs_dev_dependencies()
-
-load("@build_bazel_rules_typescript//:package.bzl", "rules_typescript_dev_dependencies")
-
-rules_typescript_dev_dependencies()
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 

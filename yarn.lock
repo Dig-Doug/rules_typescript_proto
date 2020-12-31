@@ -25,6 +25,38 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
+"@bazel/concatjs@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bazel/concatjs/-/concatjs-3.0.0.tgz#8a8b0c90ffcea4ed74a7c8db8fd37af861df394e"
+  integrity sha512-JQTKFxWY6KQwfwqQRJCJtg8sQBN0ydTvV/5umTIC9wUz+1RdVRzGVtypYuY+V8wbTWB7Pt3cr+6eq9tPjPSFWQ==
+  dependencies:
+    protobufjs "6.8.8"
+    source-map-support "0.5.9"
+    tsutils "2.27.2"
+
+"@bazel/jasmine@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bazel/jasmine/-/jasmine-3.0.0.tgz#18541696b9d8b4e1f4383dbad00e380096957827"
+  integrity sha512-m0VDs+05Svv6RAYdLF/hM9mTeVKhEmZh4qkT1ZEiHOAwdanfcCWjhF5UaMYPmSih6NYkpmNyParx+weBVaIpsA==
+  dependencies:
+    c8 "~7.1.0"
+    jasmine-reporters "~2.3.2"
+
+"@bazel/rollup@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bazel/rollup/-/rollup-3.0.0.tgz#6e424966d5ec41f6fcdbfbe25ec88d714f081b06"
+  integrity sha512-IEq+zbbzWC1hRsdCD/9UocznDJ5aNXlg+XcChM3+VJaloBCKoqAiGf337T6AkPZs3HuAlEHYMvqsRyEHxEQmtg==
+
+"@bazel/typescript@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@bazel/typescript/-/typescript-3.0.0.tgz#7cb3bcf405c590228888be78b9e49d1dc298dfea"
+  integrity sha512-qYsfyi/+7QOFP9uVAv3gKaqkxo+fIamFrdQ71K85FlJSowxAkwj51pxOPnIWBcMzFVNv1p2ZyfM3ZctKqGye2g==
+  dependencies:
+    protobufjs "6.8.8"
+    semver "5.6.0"
+    source-map-support "0.5.9"
+    tsutils "2.27.2"
+
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
@@ -155,9 +187,9 @@
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-3.5.11.tgz#ba8e80639dffbe277f49c708b45373a320d158e2"
   integrity sha512-fg1rOd/DehQTIJTifGqGVY6q92lDgnLfs7C6t1ccSwQrMyoTGSoH6wWzhJDZb6ezhsdwAX4EIBLe8w5fXWmEng==
 
-"@types/long@*", "@types/long@^4.0.1":
+"@types/long@*", "@types/long@^4.0.0", "@types/long@^4.0.1":
   version "4.0.1"
-  resolved "https://registry.npmjs.org/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
+  resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
 "@types/node@*":
@@ -169,6 +201,11 @@
   version "12.12.50"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.50.tgz#e9b2e85fafc15f2a8aa8fdd41091b983da5fd6ee"
   integrity sha512-5ImO01Fb8YsEOYpV+aeyGYztcYcjGsBvN4D7G5r1ef2cuQOpymjWNQi5V0rKHE6PC2ru3HkoUr/Br2/8GUA84w==
+
+"@types/node@^10.1.0":
+  version "10.17.50"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.50.tgz#7a20902af591282aa9176baefc37d4372131c32d"
+  integrity sha512-vwX+/ija9xKc/z9VqMCdbf4WYcMTGsI0I/L/6shIF3qXURxZOhPQlPRHtjTpiNhAwn0paMJzlOQqw6mAGEQnTA==
 
 "@types/node@^12.12.47":
   version "12.19.9"
@@ -495,6 +532,25 @@ c8@^7.3.0:
     rimraf "^3.0.0"
     test-exclude "^6.0.0"
     v8-to-istanbul "^5.0.0"
+    yargs "^15.0.0"
+    yargs-parser "^18.0.0"
+
+c8@~7.1.0:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/c8/-/c8-7.1.2.tgz#3fd785e8d264175ceffe92c74607f5cfb12f018d"
+  integrity sha512-lCEwL9lbvWOQLxoLw8RF7PM8Cdj+rKxRp/PyWC9S8xASvYHRwXQ2gxzsNTgLhQM1Utc1YDAjzQYPQIxVEyelGg==
+  dependencies:
+    "@bcoe/v8-coverage" "^0.2.3"
+    "@istanbuljs/schema" "^0.1.2"
+    find-up "^4.0.0"
+    foreground-child "^2.0.0"
+    furi "^2.0.0"
+    istanbul-lib-coverage "^3.0.0"
+    istanbul-lib-report "^3.0.0"
+    istanbul-reports "^3.0.2"
+    rimraf "^3.0.0"
+    test-exclude "^6.0.0"
+    v8-to-istanbul "^4.1.2"
     yargs "^15.0.0"
     yargs-parser "^18.0.0"
 
@@ -1691,7 +1747,7 @@ jasmine-core@^3.6.0, jasmine-core@~3.6.0:
   resolved "https://registry.yarnpkg.com/jasmine-core/-/jasmine-core-3.6.0.tgz#491f3bb23941799c353ceb7a45b38a950ebc5a20"
   integrity sha512-8uQYa7zJN8hq9z+g8z1bqCfdC8eoDAeVnM5sfqs7KHv9/ifoJ500m018fpFc7RDaO6SWCLCXwo/wPSNcdYTgcw==
 
-jasmine-reporters@^2.3.2:
+jasmine-reporters@^2.3.2, jasmine-reporters@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/jasmine-reporters/-/jasmine-reporters-2.3.2.tgz#898818ffc234eb8b3f635d693de4586f95548d43"
   integrity sha512-u/7AT9SkuZsUfFBLLzbErohTGNsEUCKaQbsVYnLFW1gEuL2DzmBL4n8v90uZsqIqlWvWUgian8J6yOt5Fyk/+A==
@@ -2357,6 +2413,25 @@ protobufjs@6.10.1:
     "@types/node" "^13.7.0"
     long "^4.0.0"
 
+protobufjs@6.8.8:
+  version "6.8.8"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.8.8.tgz#c8b4f1282fd7a90e6f5b109ed11c84af82908e7c"
+  integrity sha512-AAmHtD5pXgZfi7GMpllpO3q1Xw1OYldr+dMUlAnffGTAhqkg72WdmSY71uKBF/JuyiKs8psYbtKrhi0ASCD8qw==
+  dependencies:
+    "@protobufjs/aspromise" "^1.1.2"
+    "@protobufjs/base64" "^1.1.2"
+    "@protobufjs/codegen" "^2.0.4"
+    "@protobufjs/eventemitter" "^1.1.0"
+    "@protobufjs/fetch" "^1.1.0"
+    "@protobufjs/float" "^1.0.2"
+    "@protobufjs/inquire" "^1.1.0"
+    "@protobufjs/path" "^1.1.2"
+    "@protobufjs/pool" "^1.1.0"
+    "@protobufjs/utf8" "^1.1.0"
+    "@types/long" "^4.0.0"
+    "@types/node" "^10.1.0"
+    long "^4.0.0"
+
 protobufjs@^5.0.3:
   version "5.0.3"
   resolved "https://registry.npmjs.org/protobufjs/-/protobufjs-5.0.3.tgz#e4dfe9fb67c90b2630d15868249bcc4961467a17"
@@ -2586,6 +2661,11 @@ semver-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/semver-regex/-/semver-regex-2.0.0.tgz#a93c2c5844539a770233379107b38c7b4ac9d338"
   integrity sha512-mUdIBBvdn0PLOeP3TEkMH7HHeUP3GjsXCwKarjv/kGmUFOYg1VqEemKhoQpWMu6X2I8kHeuVdGibLGkVK+/5Qw==
 
+semver@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.6.0.tgz#7e74256fbaa49c75aa7c7a205cc22799cac80004"
+  integrity sha512-RS9R6R35NYgQn++fkDWaOmqGoj4Ek9gGs+DPxNUZKuwE183xjJroKvyo1IzVFeXvUrvmALy6FWD5xrdJT25gMg==
+
 semver@^5.3.0:
   version "5.7.1"
   resolved "https://registry.npmjs.org/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
@@ -2729,6 +2809,14 @@ source-map-support@0.5.19:
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
+source-map-support@0.5.9:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.9.tgz#41bc953b2534267ea2d605bccfa7bfa3111ced5f"
+  integrity sha512-gR6Rw4MvUlYy83vP0vxoVNzM6t8MUXqNuRsuBmBHQDu1Fh6X015FrLdgoDKcNdkwGubozq0P4N0Q37UyFVr1EA==
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
@@ -2950,6 +3038,13 @@ tslib@^1.8.1:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
 
+tsutils@2.27.2:
+  version "2.27.2"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.27.2.tgz#60ba88a23d6f785ec4b89c6e8179cac9b431f1c7"
+  integrity sha512-qf6rmT84TFMuxAKez2pIfR8UCai49iQsfB7YWVjV1bKpy/d0PWT5rEOSM6La9PiHZ0k1RRZQiwVdVJfQ3BPHgg==
+  dependencies:
+    tslib "^1.8.1"
+
 tsutils@3.17.1:
   version "3.17.1"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-3.17.1.tgz#ed719917f11ca0dee586272b2ac49e015a2dd759"
@@ -3034,6 +3129,15 @@ utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+v8-to-istanbul@^4.1.2:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/v8-to-istanbul/-/v8-to-istanbul-4.1.4.tgz#b97936f21c0e2d9996d4985e5c5156e9d4e49cd6"
+  integrity sha512-Rw6vJHj1mbdK8edjR7+zuJrpDtKIgNdAvTSAcpYfgMIw+u2dPDntD3dgN4XQFLU2/fvFQdzj+EeSGfd/jnY5fQ==
+  dependencies:
+    "@types/istanbul-lib-coverage" "^2.0.1"
+    convert-source-map "^1.6.0"
+    source-map "^0.7.3"
 
 v8-to-istanbul@^5.0.0:
   version "5.0.1"
