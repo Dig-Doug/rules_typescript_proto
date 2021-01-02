@@ -30,7 +30,7 @@ function replaceRecursiveFilePaths(args: any) {
 }
 
 function removeJsExtensionsFromRequires(contents: string) {
-  return contents.replace(/(require\(.*).js/g, (_, captureGroup: string) => {
+  return contents.replace(/(require\(.*)\.js/g, (_, captureGroup: string) => {
     return captureGroup;
   });
 }
