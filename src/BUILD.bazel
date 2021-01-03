@@ -1,13 +1,14 @@
-load("@build_bazel_rules_nodejs//packages/typescript:index.bzl", "ts_library")
+load("@rules_typescript_proto_deps//@bazel/typescript:index.bzl", "ts_library")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 nodejs_binary(
     name = "change_import_style",
     data = [
         ":change_import_style_lib",
+        "@rules_typescript_proto_deps//:node_modules"
     ],
     entry_point = ":change_import_style.ts",
-    node_modules = "@rules_typescript_proto_deps//:node_modules",
+    templated_args = ["--bazel_patch_module_resolver"],
     visibility = ["//visibility:public"],
 )
 
@@ -16,5 +17,5 @@ ts_library(
     srcs = [
         "change_import_style.ts",
     ],
-    node_modules = "@rules_typescript_proto_deps//:node_modules",
+    deps = ["@rules_typescript_proto_deps//:node_modules"],
 )
