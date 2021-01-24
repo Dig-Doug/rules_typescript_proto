@@ -5,7 +5,6 @@ nodejs_binary(
     name = "change_import_style",
     data = [
         ":change_import_style_lib",
-        "@rules_typescript_proto_deps//:node_modules"
     ],
     entry_point = ":change_import_style.ts",
     templated_args = ["--bazel_patch_module_resolver"],
@@ -17,5 +16,8 @@ ts_library(
     srcs = [
         "change_import_style.ts",
     ],
-    deps = ["@rules_typescript_proto_deps//:node_modules"],
+    deps = [
+        "@rules_typescript_proto_deps//minimist", 
+        "@rules_typescript_proto_deps//@types/node"
+    ],
 )
