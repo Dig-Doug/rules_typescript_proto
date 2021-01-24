@@ -46,19 +46,11 @@ load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 
 protobuf_deps()
 
-load("@build_bazel_rules_nodejs//:package.bzl", "rules_nodejs_dev_dependencies")
-
-rules_nodejs_dev_dependencies()
-
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
 
 go_register_toolchains()
-
-load("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
-
-stardoc_repositories()
 
 load("@build_bazel_rules_nodejs//:index.bzl", "yarn_install")
 
