@@ -19,8 +19,8 @@ function main() {
   const umdContents = convertToUmd(args, initialContents);
   fs.writeFileSync(args.output_umd_path, umdContents, 'utf8');
 
-  const commonJsContents = convertToESM(args, initialContents);
-  fs.writeFileSync(args.output_es6_path, commonJsContents, 'utf8');
+  const esmContents = convertToESM(args, initialContents);
+  fs.writeFileSync(args.output_es6_path, esmContents, 'utf8');
 }
 
 function replaceRecursiveFilePaths(args: any) {
@@ -88,7 +88,13 @@ function convertToESM(args: any, initialContents: string): string {
   };
 
   const replaceRequiresWithSubpackageImports = (contents: string) => {
-    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g, 'import * as $1 from $2;')
+    // Example:
+    //   Changes: var foo = require("@improbable-eng/grpc-web").bar;
+    //   To:      import {bar as foo} from "@improbable-eng/grpc-web";
+    return contents.replace(/var ([\w\d_]+) = require\((['"][\w\d@/_-]+['"])\)\.([\w\d_]+);/g,
+     (_, varName, moduleIdentifier, propertyName) =>
+      propertyName == varName ? `import { ${varName} } from ${moduleIdentifier}`
+        : `import { ${propertyName} as ${varName} } from ${moduleIdentifier};`);
   }
 
   const replaceCJSExportsWithECMAExports = (contents: string) => {
