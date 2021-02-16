@@ -40,3 +40,15 @@ typescript_grpc_web_library(
     name = "pizza_service_ts_grpc_web_proto",
     proto = ":pizza_service_proto",
 )
+
+proto_library(
+    name = "inside_dir_proto",
+    srcs = [
+        "dir/inside.proto",
+    ],
+)
+
+typescript_proto_library(
+    name = "inside_dir_ts_proto",
+    proto = ":inside_dir_proto",
+)

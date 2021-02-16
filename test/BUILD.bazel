@@ -10,10 +10,10 @@ jasmine_node_test(
         "@npm//@improbable-eng/grpc-web",
         "@npm//google-protobuf",
     ],
+    templated_args = ["--bazel_patch_module_resolver"],
     deps = [
         ":commonjs_test_lib",
     ],
-    templated_args = ["--bazel_patch_module_resolver"],
 )
 
 ts_library(
@@ -23,6 +23,7 @@ ts_library(
     ],
     tsconfig = ":tsconfig.json",
     deps = [
+        "//test/proto:inside_dir_ts_proto",
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
@@ -100,13 +101,13 @@ ts_library(
 jasmine_node_test(
     name = "grpc_node_test",
     data = [
-        "@npm//grpc",
         "@npm//google-protobuf",
+        "@npm//grpc",
     ],
+    templated_args = ["--bazel_patch_module_resolver"],
     deps = [
         ":pizza_service_proto_grpc_node_test",
     ],
-    templated_args = ["--bazel_patch_module_resolver"],
 )
 
 karma_web_test_suite(
@@ -150,6 +151,7 @@ ts_library(
     srcs = ["test_bundling.ts"],
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
+        "//test/proto:inside_dir_ts_proto",
         "//test/proto:naming_styles_ts_proto",
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",

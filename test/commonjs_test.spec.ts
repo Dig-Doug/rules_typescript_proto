@@ -1,5 +1,6 @@
 import deliveryPersonPb = require('rules_typescript_proto/test/proto/common/delivery_person_pb');
 import {PizzaService} from 'rules_typescript_proto/test/proto/pizza_service_pb_service';
+import {InsideDir} from 'rules_typescript_proto/test/proto/dir/inside_pb';
 
 describe('CommonJs', () => {
   it('Loads imports using require()', () => {
@@ -12,5 +13,6 @@ describe('CommonJs', () => {
 
   it('Loads imports using TS from syntax', () => {
     expect(PizzaService).toBeDefined();
+    expect(InsideDir).toBeDefined();
   });
 });
