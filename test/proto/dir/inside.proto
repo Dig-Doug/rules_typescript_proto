@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package test.bazel.proto;
+
+message InsideDir {
+  string test = 1;
+}
