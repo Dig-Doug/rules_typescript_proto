@@ -175,13 +175,16 @@ def _get_outputs(target, ctx):
         ts_file_suffixes.append("_pb_service.d.ts")
 
     for src in target[ProtoInfo].direct_sources:
+        relative_path = _get_path_relative_to_build(ctx, src)
+
         # workspace_root is empty for our local workspace, or external/other_workspace
         # for @other_workspace//
         if ctx.label.workspace_root == "":
             file_name = src.basename[:-len(src.extension) - 1]
         else:
+            relative_path = ""
             file_name = _proto_path(src)[:-len(src.extension) - 1]
-        relative_path = _get_path_relative_to_build(ctx, src)
+
         for f in js_file_suffixes:
             output = ctx.actions.declare_file(relative_path + file_name + f)
             js_outputs.append(output)

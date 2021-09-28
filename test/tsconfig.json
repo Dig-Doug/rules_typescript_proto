@@ -16,8 +16,9 @@
     "types": [
       "jasmine"
     ],
+    "baseUrl": "..",
     "paths": {
-      "rules_typescript_proto/*": ["../bazel-out/darwin-fastbuild/bin/*"]
+      "rules_typescript_proto/*": ["*", "../bazel-out/darwin-fastbuild/bin/*", "bazel-bin/*"]
     }
   }
 }
