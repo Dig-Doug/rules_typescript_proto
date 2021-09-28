@@ -10,6 +10,7 @@ proto_library(
         "delivery_person.proto",
     ],
     deps = [
+        "@com_google_protobuf//:timestamp_proto",
         ":pizza_proto",
     ],
 )
