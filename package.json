@@ -37,7 +37,7 @@
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "source-map-support": "0.5.19",
-    "ts-protoc-gen": "0.14.0",
+    "ts-protoc-gen": "0.15.0",
     "tsickle": "0.39.1",
     "tsutils": "3.17.1",
     "typescript": "3.9.7",
