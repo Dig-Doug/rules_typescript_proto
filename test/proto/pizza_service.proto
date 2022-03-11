@@ -13,6 +13,7 @@ service PizzaService {
 message OrderPizzaRequest {
   // The list of pizzas to order.
   repeated Pizza pizzas = 1;
+  optional string toppings = 2;
 }
 
 message OrderPizzaResponse {
