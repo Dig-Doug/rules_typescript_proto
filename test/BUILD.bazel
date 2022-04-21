@@ -47,6 +47,18 @@ genrule(
              && cat $< >> $@ \
              && echo '});' >> $@""",
 )
+genrule(
+    name = "google_protobuf_timestamp_pb_requirejs",
+    srcs = [
+        "@npm//:node_modules/google-protobuf/google/protobuf/timestamp_pb.js",
+    ],
+    outs = [
+        "timestamp_pb.js"
+    ],
+    cmd = """echo "define('google-protobuf/google/protobuf/timestamp_pb', function(require, exports, module) {" > $@ \
+             && cat $< >> $@ \
+             && echo '});' >> $@""",
+)
 
 ts_library(
     name = "proto_with_deps_test",
@@ -68,6 +80,7 @@ karma_web_test_suite(
     tags = ["native"],
     deps = [
         ":google_protobuf_requirejs",
+        ":google_protobuf_timestamp_pb_requirejs",
         ":proto_with_deps_test",
     ],
 )
@@ -128,6 +141,7 @@ karma_web_test_suite(
     tags = ["native"],
     deps = [
         ":google_protobuf_requirejs",
+        ":google_protobuf_timestamp_pb_requirejs",
         ":pizza_service_proto_test",
     ],
 )
