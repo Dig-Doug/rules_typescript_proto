@@ -27,6 +27,8 @@ ts_library(
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
+        "@npm//google-protobuf",
+        "@npm//@types/google-protobuf",
         "@npm//@types/jasmine",
     ],
 )

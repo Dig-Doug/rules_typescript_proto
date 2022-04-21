@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package test.bazel.proto;
 
+import "google/protobuf/timestamp.proto";
 import "test/proto/common/pizza.proto";
 
 message DeliveryPerson {
@@ -16,4 +17,6 @@ message DeliveryPerson {
     string id = 3;
     int64 id_v2 = 4;
   }
+
+  google.protobuf.Timestamp last_delivery_time = 5;
 }
