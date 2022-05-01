@@ -1,3 +1,5 @@
+global.window = global;
+
 const bundle = require('rules_typescript_proto/test/test_es6_bundling/');
 
 describe('Rollup', () => {

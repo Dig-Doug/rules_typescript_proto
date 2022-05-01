@@ -7,10 +7,10 @@
     "google-protobuf": "3.15.5"
   },
   "devDependencies": {
-    "@bazel/concatjs": "4.2.0",
-    "@bazel/jasmine": "4.2.0",
-    "@bazel/rollup": "4.2.0",
-    "@bazel/typescript": "4.2.0",
+    "@bazel/concatjs": "5.2.0",
+    "@bazel/jasmine": "5.2.0",
+    "@bazel/rollup": "5.2.0",
+    "@bazel/typescript": "5.2.0",
     "@grpc/grpc-js": "1.2.1",
     "@improbable-eng/grpc-web": "0.15.0",
     "@types/google-protobuf": "3.15.5",
