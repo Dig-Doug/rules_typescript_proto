@@ -16,8 +16,13 @@
     "types": [
       "jasmine"
     ],
+    "baseUrl": "..",
+    "rootDirs": [
+      "../bazel-out/darwin-fastbuild/bin",
+      "../bazel-out/darwin_arm64-fastbuild/bin"
+    ],
     "paths": {
-      "rules_typescript_proto/*": ["../bazel-out/darwin-fastbuild/bin/*"]
+      "rules_typescript_proto/*": ["*", "bazel-out/darwin-fastbuild/bin/*", "bazel-out/darwin_arm64-fastbuild/bin/*", "bazel-bin/*"]
     }
   }
 }

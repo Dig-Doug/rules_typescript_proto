@@ -18,5 +18,7 @@ def rules_typescript_proto_dependencies():
         # Don't use managed directories because these are internal to the library and the
         # dependencies shouldn't need to be installed by the user.
         symlink_node_modules = False,
+        exports_directories_only = False,
+        package_path = "/",
         yarn_lock = "@rules_typescript_proto//:yarn.lock",
     )

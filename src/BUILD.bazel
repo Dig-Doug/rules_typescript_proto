@@ -1,4 +1,4 @@
-load("@rules_typescript_proto_deps//@bazel/typescript:index.bzl", "ts_library")
+load("@rules_typescript_proto_deps//@bazel/typescript:index.bzl", "ts_project")
 load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
 nodejs_binary(
@@ -11,13 +11,13 @@ nodejs_binary(
     visibility = ["//visibility:public"],
 )
 
-ts_library(
+ts_project(
     name = "change_import_style_lib",
     srcs = [
         "change_import_style.ts",
     ],
     deps = [
-        "@rules_typescript_proto_deps//minimist", 
+        "@rules_typescript_proto_deps//minimist",
         "@rules_typescript_proto_deps//@types/node"
     ],
 )
