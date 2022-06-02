@@ -31,7 +31,7 @@
     "karma-requirejs": "1.1.0",
     "karma-sourcemap-loader": "0.3.7",
     "minimist": "1.2.6",
-    "protobufjs": "6.10.1",
+    "protobufjs": "6.11.3",
     "requirejs": "2.3.6",
     "rollup": "2.22.1",
     "rollup-plugin-commonjs": "10.1.0",
