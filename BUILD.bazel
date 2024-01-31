@@ -1,10 +1,15 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_config")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+load("@npm//:defs.bzl", "npm_link_all_packages")
 
 package(default_visibility = ["//:__subpackages__"])
 
 exports_files([
     "tsconfig.json",
+    "node_modules/google-protobuf/google/protobuf/timestamp_pb.js",
+    "node_modules/google-protobuf/google-protobuf.js",
 ])
+
+npm_link_all_packages(name = "node_modules")
 
 ts_config(
     name = "tsconfig",

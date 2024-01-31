@@ -6,8 +6,14 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "965ee2492a2b087cf9e0f2ca472aeaf1be2eb650e0cfbddf514b9a7d3ea4b02a",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.2.0/rules_nodejs-5.2.0.tar.gz"],
+    sha256 = "2b2004784358655f334925e7eadc7ba80f701144363df949b3293e1ae7a2fb7b",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.4.0/rules_nodejs-5.4.0.tar.gz"],
+)
+
+http_archive(
+    name = "rules_nodejs",
+    sha256 = "33e309ba281fc73626a356a839bf5e5279360e7a2caea419c45c8017b5b3f7e2",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.0/rules_nodejs-core-5.7.0.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -40,6 +46,51 @@ http_archive(
     ],
 )
 
+http_archive(
+    name = "aspect_rules_ts",
+    sha256 = "6ad28b5bac2bb5a74e737925fbc3f62ce1edabe5a48d61a9980c491ef4cedfb7",
+    strip_prefix = "rules_ts-2.1.1",
+    url = "https://github.com/aspect-build/rules_ts/releases/download/v2.1.1/rules_ts-v2.1.1.tar.gz",
+)
+
+http_archive(
+    name = "aspect_rules_js",
+    sha256 = "630a71aba66c4023a5b16ab3efafaeed8b1a2865ccd168a34611eb73876b3fc4",
+    strip_prefix = "rules_js-1.37.1",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.37.1/rules_js-v1.37.1.tar.gz",
+)
+
+http_archive(
+    name = "aspect_rules_jasmine",
+    sha256 = "4c16ef202d1e53fd880e8ecc9e0796802201ea9c89fa32f52d5d633fff858cac",
+    strip_prefix = "rules_jasmine-1.1.1",
+    url = "https://github.com/aspect-build/rules_jasmine/releases/download/v1.1.1/rules_jasmine-v1.1.1.tar.gz",
+)
+
+http_archive(
+    name = "aspect_rules_rollup",
+    sha256 = "a0433a0b0206a45d362749d71bc1e4e0dacf5ca2a572b059328f9753392bca80",
+    strip_prefix = "rules_rollup-1.0.0",
+    url = "https://github.com/aspect-build/rules_rollup/releases/download/v1.0.0/rules_rollup-v1.0.0.tar.gz",
+)
+
+load("@aspect_rules_jasmine//jasmine:dependencies.bzl", "rules_jasmine_dependencies")
+load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
+load("@aspect_rules_rollup//rollup:dependencies.bzl", "rules_rollup_dependencies")
+load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
+
+rules_js_dependencies()
+
+rules_ts_dependencies(
+    ts_version_from = "//:package.json",
+)
+
+rules_jasmine_dependencies()
+
+rules_rollup_dependencies()
+
+load("@build_bazel_rules_nodejs//:index.bzl", "check_build_bazel_rules_nodejs_version", "node_repositories")
+
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 
 rules_proto_dependencies()
@@ -56,20 +107,25 @@ go_rules_dependencies()
 
 go_register_toolchains(version = "1.18")
 
-load("@build_bazel_rules_nodejs//:index.bzl", "check_build_bazel_rules_nodejs_version", "node_repositories", "yarn_install")
-
 # Test that check_build_bazel_rules_nodejs_version works as expected
 check_build_bazel_rules_nodejs_version(minimum_version_string = "4.4.0")
 
 node_repositories()
 
-yarn_install(
+load("@aspect_rules_js//npm:repositories.bzl", "npm_translate_lock")
+
+npm_translate_lock(
     name = "npm",
-    package_json = "//:package.json",
-    exports_directories_only = False,
-    package_path = "/",
+    data = [
+        "@//:package.json",
+    ],
+    pnpm_lock = "//:pnpm-lock.yaml",
     yarn_lock = "//:yarn.lock",
 )
+
+load("@npm//:repositories.bzl", "npm_repositories")
+
+npm_repositories()
 
 load("@io_bazel_rules_webtesting//web:repositories.bzl", "web_test_repositories")
 

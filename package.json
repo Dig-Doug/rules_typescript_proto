@@ -4,7 +4,9 @@
   "repository": "https://github.com/Dig-Doug/rules_typescript_proto",
   "license": "Apache-2.0",
   "dependencies": {
-    "google-protobuf": "3.15.5"
+    "google-protobuf": "3.15.5",
+    "karma-junit-reporter": "2.0.0",
+    "yocto-queue": "0.1.0"
   },
   "devDependencies": {
     "@bazel/concatjs": "5.2.0",

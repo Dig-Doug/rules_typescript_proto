@@ -17,12 +17,12 @@ load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 TypescriptProtoLibraryAspect = provider(
     "establishes transitive dependencies for typescript on protobuf files",
     fields = {
-        "es5_outputs": "The ES5 JS files produced directly from the src protos",
-        "es6_outputs": "The ES6 JS files produced directly from the src protos",
-        "dts_outputs": "Ths TS definition files produced directly from the src protos",
+        "deps_dts": "The transitive dependencies' TS definitions",
         "deps_es5": "The transitive ES5 JS dependencies",
         "deps_es6": "The transitive ES6 JS dependencies",
-        "deps_dts": "The transitive dependencies' TS definitions",
+        "dts_outputs": "Ths TS definition files produced directly from the src protos",
+        "es5_outputs": "The ES5 JS files produced directly from the src protos",
+        "es6_outputs": "The ES6 JS files produced directly from the src protos",
     },
 )
 
@@ -280,29 +280,29 @@ typescript_proto_library_aspect = aspect(
                 "grpc-js",
             ],
         ),
-        "_ts_protoc_gen": attr.label(
-            allow_files = True,
+        "_change_import_style": attr.label(
             executable = True,
-            cfg = "host",
-            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+            cfg = "exec",
+            allow_files = True,
+            default = Label("//src:change_import_style"),
         ),
         "_grpc_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("@com_google_protobuf//:protoc"),
         ),
-        "_change_import_style": attr.label(
-            executable = True,
-            cfg = "host",
+        "_ts_protoc_gen": attr.label(
             allow_files = True,
-            default = Label("//src:change_import_style"),
+            executable = True,
+            cfg = "exec",
+            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
         ),
     },
 )
@@ -349,13 +349,6 @@ def _typescript_proto_library_impl(ctx):
 
 typescript_proto_build = rule(
     attrs = {
-        "proto": attr.label(
-            doc = "the protobuf file that should be processed",
-            mandatory = True,
-            allow_single_file = True,
-            providers = [ProtoInfo],
-            aspects = [typescript_proto_library_aspect],
-        ),
         "generate": attr.string(
             doc = "which format to output, with 'base' being the protobuf messages",
             mandatory = False,
@@ -375,23 +368,30 @@ typescript_proto_build = rule(
                 "grpc-js",
             ],
         ),
-        "_ts_protoc_gen": attr.label(
-            allow_files = True,
-            executable = True,
-            cfg = "host",
-            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
+        "proto": attr.label(
+            doc = "the protobuf file that should be processed",
+            mandatory = True,
+            allow_single_file = True,
+            providers = [ProtoInfo],
+            aspects = [typescript_proto_library_aspect],
         ),
         "_grpc_protoc_gen": attr.label(
             allow_files = True,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("@rules_typescript_proto_deps//grpc-tools/bin:grpc_tools_node_protoc_plugin"),
         ),
         "_protoc": attr.label(
             allow_single_file = True,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("@com_google_protobuf//:protoc"),
+        ),
+        "_ts_protoc_gen": attr.label(
+            allow_files = True,
+            executable = True,
+            cfg = "exec",
+            default = Label("@rules_typescript_proto_deps//ts-protoc-gen/bin:protoc-gen-ts"),
         ),
     },
     implementation = _typescript_proto_library_impl,

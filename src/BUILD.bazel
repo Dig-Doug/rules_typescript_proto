@@ -1,13 +1,12 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary")
 load("@rules_typescript_proto_deps//@bazel/typescript:index.bzl", "ts_project")
-load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary")
 
-nodejs_binary(
+js_binary(
     name = "change_import_style",
     data = [
         ":change_import_style_lib",
     ],
     entry_point = ":change_import_style.ts",
-    templated_args = ["--bazel_patch_module_resolver"],
     visibility = ["//visibility:public"],
 )
 
@@ -17,7 +16,7 @@ ts_project(
         "change_import_style.ts",
     ],
     deps = [
+        "@rules_typescript_proto_deps//@types/node",
         "@rules_typescript_proto_deps//minimist",
-        "@rules_typescript_proto_deps//@types/node"
     ],
 )

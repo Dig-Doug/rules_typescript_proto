@@ -1,34 +1,32 @@
-load("@npm//@bazel/jasmine:index.bzl", "jasmine_node_test")
-load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
-load("@npm//@bazel/concatjs:index.bzl", "karma_web_test_suite", "ts_library")
+load("@aspect_rules_jasmine//jasmine:defs.bzl", "jasmine_test")
+load("@aspect_rules_rollup//rollup:defs.bzl", "rollup")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 
 # This test checks that the protos can be resolved in a nodejs environment
-jasmine_node_test(
+jasmine_test(
     name = "commonjs_test",
     data = [
-        "@npm//@improbable-eng/grpc-web",
-        "@npm//google-protobuf",
-    ],
-    templated_args = ["--bazel_patch_module_resolver"],
-    deps = [
         ":commonjs_test_lib",
+        "//:node_modules/@improbable-eng/grpc-web",
+        "//:node_modules/google-protobuf",
     ],
+    node_modules = "//:node_modules",
 )
 
-ts_library(
+ts_project(
     name = "commonjs_test_lib",
     srcs = [
         "commonjs_test.spec.ts",
     ],
     tsconfig = ":tsconfig.json",
     deps = [
+        "//:node_modules/@types/google-protobuf",
+        "//:node_modules/@types/jasmine",
+        "//:node_modules/google-protobuf",
         "//test/proto:inside_dir_ts_proto",
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
-        "@npm//google-protobuf",
-        "@npm//@types/google-protobuf",
-        "@npm//@types/jasmine",
     ],
 )
 
@@ -37,7 +35,7 @@ ts_library(
 genrule(
     name = "google_protobuf_requirejs",
     srcs = [
-        "@npm//:node_modules/google-protobuf/google-protobuf.js",
+        "//:node_modules/google-protobuf/google-protobuf.js",
     ],
     outs = [
         "google-protobuf.js",
@@ -46,45 +44,33 @@ genrule(
              && cat $< >> $@ \
              && echo '});' >> $@""",
 )
+
 genrule(
     name = "google_protobuf_timestamp_pb_requirejs",
     srcs = [
-        "@npm//:node_modules/google-protobuf/google/protobuf/timestamp_pb.js",
+        "//:node_modules/google-protobuf/google/protobuf/timestamp_pb.js",
     ],
     outs = [
-        "timestamp_pb.js"
+        "timestamp_pb.js",
     ],
     cmd = """echo "define('google-protobuf/google/protobuf/timestamp_pb', function(require, exports, module) {" > $@ \
              && cat $< >> $@ \
              && echo '});' >> $@""",
 )
 
-ts_library(
+ts_project(
     name = "proto_with_deps_test",
     testonly = 1,
     srcs = ["proto_with_deps_test.spec.ts"],
     tsconfig = ":tsconfig.json",
     deps = [
         "//test/proto/common:delivery_person_ts_proto",
-        "@npm//@types/jasmine",
+        "//:node_modules/@types/jasmine",
         # Don't put pizza_ts_proto here, we want to test it is included transitively
     ],
 )
 
-karma_web_test_suite(
-    name = "proto_with_deps_test_suite",
-    browsers = [
-        "@io_bazel_rules_webtesting//browsers:chromium-local",
-    ],
-    tags = ["native"],
-    deps = [
-        ":google_protobuf_requirejs",
-        ":google_protobuf_timestamp_pb_requirejs",
-        ":proto_with_deps_test",
-    ],
-)
-
-ts_library(
+ts_project(
     name = "pizza_service_proto_test",
     testonly = 1,
     srcs = ["pizza_service_proto_test.spec.ts"],
@@ -93,12 +79,12 @@ ts_library(
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:pizza_ts_base_proto",
-        "@npm//@types/jasmine",
+        "//:node_modules/@types/jasmine",
         # Don't put delivery_person_ts_proto here, we want to test it is included transitively
     ],
 )
 
-ts_library(
+ts_project(
     name = "pizza_service_proto_grpc_node_test",
     testonly = 1,
     srcs = ["pizza_service_proto_grpc_node_test.spec.ts"],
@@ -107,83 +93,58 @@ ts_library(
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_node_proto",
         "//test/proto/common:pizza_ts_base_proto",
-        "@npm//@types/jasmine",
+        "//:node_modules/@types/jasmine",
         # Don't put delivery_person_ts_proto here, we want to test it is included transitively
     ],
 )
 
-jasmine_node_test(
+jasmine_test(
     name = "grpc_node_test",
     data = [
-        "@npm//google-protobuf",
-        "@npm//grpc",
-    ],
-    templated_args = ["--bazel_patch_module_resolver"],
-    deps = [
         ":pizza_service_proto_grpc_node_test",
+        "//:node_modules/google-protobuf",
+        "//:node_modules/grpc",
     ],
+    node_modules = "//:node_modules",
 )
 
-karma_web_test_suite(
-    name = "pizza_service_proto_test_suite",
-    srcs = [
-        "require.config.js",
-    ],
-    browsers = [
-        "@io_bazel_rules_webtesting//browsers:chromium-local",
-    ],
-    # Files are served under /base/<WORKSPACE_NAME>/<path>
-    static_files = [
-        "@npm//:node_modules/@improbable-eng/grpc-web/dist/grpc-web-client.umd.js",
-        "@npm//:node_modules/browser-headers/dist/browser-headers.umd.js",
-    ],
-    tags = ["native"],
-    deps = [
-        ":google_protobuf_requirejs",
-        ":google_protobuf_timestamp_pb_requirejs",
-        ":pizza_service_proto_test",
-    ],
-)
-
-rollup_bundle(
+rollup(
     name = "test_es6_bundling",
     config_file = "rollup.config.js",
     entry_points = {
         ":test_bundling.ts": "index",
     },
     format = "cjs",
-    link_workspace_root = True,
+    node_modules = "//:node_modules",
     output_dir = True,
     deps = [
         ":test_bundling_lib",
-        "@npm//rollup-plugin-commonjs",
-        "@npm//rollup-plugin-node-resolve",
+        "//:node_modules/rollup-plugin-commonjs",
+        "//:node_modules/rollup-plugin-node-resolve",
     ],
 )
 
-ts_library(
+ts_project(
     name = "test_bundling_lib",
     srcs = ["test_bundling.ts"],
     tsconfig = ":test_bundling_tsconfig.json",
     deps = [
+        "//:node_modules/@improbable-eng/grpc-web",
+        "//:node_modules/google-protobuf",
         "//test/proto:inside_dir_ts_proto",
         "//test/proto:naming_styles_ts_proto",
         "//test/proto:pizza_service_ts_base_proto",
         "//test/proto:pizza_service_ts_grpc_web_proto",
         "//test/proto/common:delivery_person_ts_proto",
         "//test/proto/common:pizza_ts_base_proto",
-        "@npm//@improbable-eng/grpc-web",
-        "@npm//google-protobuf",
     ],
 )
 
-jasmine_node_test(
+jasmine_test(
     name = "rollup_test",
-    srcs = [
-        ":rollup_test.spec.js",
-    ],
     data = [
+        ":rollup_test.spec.js",
         ":test_es6_bundling",
     ],
-    templated_args = ["--bazel_patch_module_resolver"],
+    node_modules = "//:node_modules",
 )
